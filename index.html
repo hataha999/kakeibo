@@ -333,7 +333,10 @@
 
   <!-- ② 一覧 -->
   <div id="page-list" class="page">
-    <div class="page-header"><h1>💰 支出一覧</h1></div>
+    <div class="page-header">
+      <h1>💰 支出一覧</h1>
+      <button class="cur-btn" id="cur-btn-list">¥</button>
+    </div>
     <main>
       <div class="list-nav">
         <div class="seg-btns" id="mode-btns">
@@ -352,7 +355,10 @@
 
   <!-- ③ サブスク -->
   <div id="page-subs" class="page">
-    <div class="page-header"><h1>🔄 サブスク管理</h1></div>
+    <div class="page-header">
+      <h1>🔄 サブスク管理</h1>
+      <button class="cur-btn" id="cur-btn-subs">¥</button>
+    </div>
     <main>
       <div id="subs-content"></div>
       <button class="add-dashed-btn" id="btn-add-sub">＋ サブスクを追加</button>
@@ -564,7 +570,7 @@ function showToast(msg) {
 }
 function updateCurrencyPrefixes() {
   const sym = curInfo().symbol;
-  document.getElementById('cur-btn').textContent = sym;
+  document.querySelectorAll('.cur-btn').forEach(el => el.textContent = sym);
   document.querySelectorAll('.cur-prefix').forEach(el => el.textContent = sym);
 }
 
@@ -1138,6 +1144,8 @@ function initListeners() {
   document.getElementById('btn-add-income').addEventListener('click', () => openIncomeModal());
 
   document.getElementById('cur-btn').addEventListener('click', openCurrencyModal);
+  document.getElementById('cur-btn-list').addEventListener('click', openCurrencyModal);
+  document.getElementById('cur-btn-subs').addEventListener('click', openCurrencyModal);
 
   document.getElementById('cur-options').addEventListener('click', e => {
     const opt = e.target.closest('.cur-option');
