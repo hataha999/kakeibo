@@ -12,36 +12,23 @@
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
-      --bg: #f8fafc;
-      --surface: #ffffff;
-      --surface2: #f1f5f9;
-      --border: #e2e8f0;
-      --text: #1e293b;
-      --text2: #475569;
-      --text3: #94a3b8;
-      --accent: #7c3aed;
-      --accent-bg: #ede9fe;
-      --red: #dc2626;
-      --green: #16a34a;
-      --green-bg: #dcfce7;
-      --radius: 12px;
-      --tab-h: 3.5rem;
+      --bg: #f8fafc; --surface: #ffffff; --surface2: #f1f5f9;
+      --border: #e2e8f0; --text: #1e293b; --text2: #475569; --text3: #94a3b8;
+      --accent: #7c3aed; --accent-bg: #ede9fe;
+      --red: #dc2626; --green: #16a34a; --green-bg: #dcfce7;
+      --radius: 12px; --tab-h: 3.5rem;
     }
     html, body { height: 100%; }
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Hiragino Kaku Gothic ProN", "Noto Sans JP", sans-serif;
-      background: var(--bg); color: var(--text);
-      min-height: 100vh; -webkit-tap-highlight-color: transparent;
+      background: var(--bg); color: var(--text); min-height: 100vh; -webkit-tap-highlight-color: transparent;
     }
     #app { max-width: 480px; margin: 0 auto; position: relative; min-height: 100vh; }
-
     .page { display: none; min-height: 100vh; flex-direction: column; padding-bottom: calc(var(--tab-h) + 0.5rem); }
     .page.active { display: flex; }
-
     .page-header {
-      position: sticky; top: 0; z-index: 30;
-      background: var(--surface); border-bottom: 1px solid var(--border);
-      padding: 0.75rem 1rem;
+      position: sticky; top: 0; z-index: 30; background: var(--surface);
+      border-bottom: 1px solid var(--border); padding: 0.75rem 1rem;
       display: flex; align-items: center; justify-content: space-between;
     }
     .page-header h1 { font-size: 1.05rem; font-weight: 700; }
@@ -50,8 +37,7 @@
     .tab-bar {
       position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
       width: 100%; max-width: 480px; height: var(--tab-h);
-      background: var(--surface); border-top: 1px solid var(--border);
-      display: flex; z-index: 40;
+      background: var(--surface); border-top: 1px solid var(--border); display: flex; z-index: 40;
     }
     .tab-btn {
       flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
@@ -69,23 +55,14 @@
       cursor: pointer; box-shadow: 0 4px 16px rgba(124,58,237,0.4);
       display: flex; align-items: center; justify-content: center; z-index: 45;
     }
-
-    main { flex: 1; padding: 0.75rem; }
-    .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1rem; margin-bottom: 0.75rem; }
-    .section-label { font-size: 0.7rem; font-weight: 700; color: var(--text3); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.6rem; }
-
-    /* Header action buttons */
-    .cur-btn {
-      background: var(--surface2); border: 1.5px solid var(--border);
-      border-radius: 6px; padding: 0.25rem 0.55rem;
-      font-size: 0.85rem; font-weight: 700; color: var(--text2); cursor: pointer;
-      line-height: 1.4; min-width: 2.4rem; text-align: center;
-    }
     .income-btn {
       background: var(--green-bg); border: 1.5px solid #86efac;
       border-radius: 6px; padding: 0.25rem 0.6rem;
       font-size: 0.78rem; font-weight: 700; color: var(--green); cursor: pointer;
     }
+
+    main { flex: 1; padding: 0.75rem; }
+    .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1rem; margin-bottom: 0.75rem; }
 
     /* CALENDAR */
     .cal-nav { display: flex; align-items: center; justify-content: space-between; padding: 0.25rem; margin-bottom: 0.5rem; }
@@ -97,11 +74,9 @@
     .cal-wd:last-child { color: #3b82f6; }
     .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; }
     .cal-day {
-      min-height: 3.4rem; background: var(--surface);
-      border: 1px solid var(--border); border-radius: 6px;
-      padding: 0.2rem 0.1rem;
-      display: flex; flex-direction: column; align-items: center;
-      cursor: pointer;
+      min-height: 3.4rem; background: var(--surface); border: 1px solid var(--border);
+      border-radius: 6px; padding: 0.2rem 0.1rem;
+      display: flex; flex-direction: column; align-items: center; cursor: pointer;
     }
     .cal-day.empty { background: transparent; border-color: transparent; cursor: default; }
     .cal-day.has-exp { background: #f5f3ff; }
@@ -109,32 +84,26 @@
     .cal-day.has-both { background: #faf5ff; }
     .cal-day.today .cal-day-num {
       background: var(--accent); color: #fff; border-radius: 50%;
-      width: 1.4rem; height: 1.4rem;
-      display: flex; align-items: center; justify-content: center;
+      width: 1.4rem; height: 1.4rem; display: flex; align-items: center; justify-content: center;
     }
     .cal-day.sunday .cal-day-num { color: #ef4444; }
     .cal-day.saturday .cal-day-num { color: #3b82f6; }
     .cal-day-num { font-size: 0.75rem; font-weight: 600; margin-bottom: 0.05rem; }
-    .cal-day-amt { font-size: 0.52rem; color: var(--accent); font-weight: 700; text-align: center; line-height: 1.2; }
-    .cal-day-inc { font-size: 0.52rem; color: var(--green); font-weight: 700; text-align: center; line-height: 1.2; }
+    .cal-day-amt { font-size: 0.5rem; color: var(--accent); font-weight: 700; text-align: center; line-height: 1.3; }
+    .cal-day-inc { font-size: 0.5rem; color: var(--green); font-weight: 700; text-align: center; line-height: 1.3; }
 
     /* Month summary */
-    .month-summary-card {
-      background: var(--surface); border: 1px solid var(--border);
-      border-radius: var(--radius); margin-top: 0.75rem; overflow: hidden;
-    }
-    .month-row {
-      display: flex; justify-content: space-between; align-items: center;
-      padding: 0.55rem 1rem;
-    }
+    .month-summary-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); margin-top: 0.75rem; overflow: hidden; }
+    .month-row { display: flex; justify-content: space-between; align-items: center; padding: 0.55rem 1rem; }
     .month-row + .month-row { border-top: 1px solid var(--border); }
     .month-row-label { font-size: 0.8rem; color: var(--text2); font-weight: 600; }
-    .month-row-amount { font-size: 0.95rem; font-weight: 700; }
+    .month-row-amount { font-size: 0.92rem; font-weight: 700; text-align: right; }
     .amount-inc { color: var(--green); }
     .amount-exp { color: var(--accent); }
     .amount-pos { color: var(--green); }
     .amount-neg { color: var(--red); }
     .amount-zero { color: var(--text3); }
+    .amount-mixed { color: var(--text2); font-size: 0.8rem; }
 
     /* LIST */
     .list-nav { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.75rem; flex-wrap: wrap; }
@@ -150,7 +119,7 @@
     .period-btn { background: none; border: none; color: var(--text2); font-size: 1.1rem; cursor: pointer; padding: 0.2rem; }
 
     .summary-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 0.875rem; margin-bottom: 0.75rem; }
-    .summary-total { font-size: 1.4rem; font-weight: 700; margin-bottom: 0.75rem; }
+    .summary-total { font-size: 1.3rem; font-weight: 700; margin-bottom: 0.75rem; }
     .summary-total span { font-size: 0.8rem; font-weight: 400; color: var(--text2); margin-right: 0.3rem; }
 
     /* PIE CHART */
@@ -181,8 +150,6 @@
       border-radius: 8px; padding: 0.6rem 0.75rem; margin-bottom: 0.3rem; cursor: pointer;
     }
     .exp-item:active { background: var(--accent-bg); }
-    .exp-item.income-item { border-left: 3px solid var(--green); }
-    .exp-item.income-item:active { background: var(--green-bg); }
     .exp-cat-icon { font-size: 1.1rem; flex-shrink: 0; }
     .exp-info { flex: 1; min-width: 0; }
     .exp-desc { font-size: 0.88rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -191,12 +158,9 @@
     .exp-delete { background: none; border: none; color: var(--text3); cursor: pointer; font-size: 0.9rem; padding: 0.3rem; flex-shrink: 0; }
 
     /* SUBSCRIPTIONS */
-    .subs-total-card {
-      background: var(--accent); color: #fff;
-      border-radius: var(--radius); padding: 1rem; margin-bottom: 0.75rem;
-    }
+    .subs-total-card { background: var(--accent); color: #fff; border-radius: var(--radius); padding: 1rem; margin-bottom: 0.75rem; }
     .subs-total-label { font-size: 0.78rem; opacity: 0.85; margin-bottom: 0.2rem; }
-    .subs-total-amount { font-size: 1.6rem; font-weight: 700; }
+    .subs-total-amount { font-size: 1.5rem; font-weight: 700; line-height: 1.3; }
     .subs-total-note { font-size: 0.7rem; opacity: 0.75; margin-top: 0.25rem; }
     .sub-item {
       display: flex; align-items: center; gap: 0.5rem;
@@ -208,6 +172,7 @@
     .sub-name { font-size: 0.9rem; font-weight: 700; }
     .sub-detail { font-size: 0.7rem; color: var(--text2); margin-top: 0.1rem; }
     .sub-amount { font-size: 0.88rem; font-weight: 700; color: var(--accent); white-space: nowrap; }
+    .sub-cur-badge { font-size: 0.6rem; background: var(--accent-bg); color: var(--accent); border-radius: 4px; padding: 0.1rem 0.3rem; font-weight: 700; margin-left: 0.25rem; vertical-align: middle; }
     .sub-quick-btn {
       background: var(--accent-bg); color: var(--accent); border: none; border-radius: 6px;
       padding: 0.3rem 0.5rem; font-size: 0.65rem; font-weight: 700; cursor: pointer; white-space: nowrap;
@@ -220,10 +185,7 @@
     }
 
     /* MODALS */
-    .overlay {
-      position: fixed; inset: 0; background: rgba(0,0,0,0.45);
-      z-index: 50; display: none;
-    }
+    .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 50; display: none; }
     .overlay.open { display: block; }
     .modal {
       position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
@@ -245,10 +207,19 @@
     }
     input:focus, select:focus { outline: none; border-color: var(--accent); background: var(--surface); }
     .amount-wrap { position: relative; }
-    .cur-prefix { position: absolute; left: 0.75rem; top: 50%; transform: translateY(-50%); font-size: 1rem; color: var(--text2); pointer-events: none; }
+    .cur-prefix { position: absolute; left: 0.75rem; top: 50%; transform: translateY(-50%); font-size: 1rem; color: var(--text2); pointer-events: none; font-weight: 600; }
     .amount-wrap input { padding-left: 1.75rem; }
     input[type=number]::-webkit-inner-spin-button,
     input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+
+    /* Currency chips (per-entry) */
+    .cur-chips { display: flex; flex-wrap: wrap; gap: 0.35rem; }
+    .cur-chip {
+      padding: 0.3rem 0.6rem; border: 1.5px solid var(--border);
+      border-radius: 6px; background: var(--surface); color: var(--text2);
+      font-size: 0.8rem; font-weight: 700; cursor: pointer; transition: all 0.1s;
+    }
+    .cur-chip.selected { border-color: var(--accent); background: var(--accent-bg); color: var(--accent); }
 
     /* Category chips */
     .cat-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 0.4rem; }
@@ -276,21 +247,7 @@
     .day-exp-item:last-child { border-bottom: none; }
     .day-total-row { display: flex; justify-content: space-between; padding-top: 0.5rem; margin-top: 0.25rem; font-weight: 700; font-size: 0.88rem; border-top: 2px solid var(--border); }
 
-    /* Currency picker modal */
-    .cur-option {
-      display: flex; align-items: center; gap: 0.75rem;
-      padding: 0.875rem 0.5rem; border-bottom: 1px solid var(--border);
-      cursor: pointer; border-radius: 8px;
-    }
-    .cur-option:active { background: var(--surface2); }
-    .cur-option.selected { background: var(--accent-bg); }
-    .cur-symbol { font-size: 1.4rem; font-weight: 700; width: 2rem; text-align: center; color: var(--accent); }
-    .cur-name { font: 600 0.9rem/1.3 inherit; color: var(--text); }
-    .cur-desc { font-size: 0.72rem; color: var(--text3); }
-    .cur-check { margin-left: auto; color: var(--accent); font-size: 1.1rem; }
-
     .empty-state { text-align: center; color: var(--text3); padding: 3rem 1rem; font-size: 0.9rem; line-height: 2.2; }
-
     .toast {
       position: fixed; bottom: calc(var(--tab-h) + 0.75rem); left: 50%; transform: translateX(-50%);
       background: #1e293b; color: #fff; padding: 0.6rem 1.2rem; border-radius: 9999px;
@@ -298,7 +255,6 @@
       transition: opacity 0.2s; white-space: nowrap; pointer-events: none;
     }
     .toast.show { opacity: 1; }
-
     ::-webkit-scrollbar { display: none; }
     * { scrollbar-width: none; }
   </style>
@@ -310,10 +266,7 @@
   <div id="page-home" class="page active">
     <div class="page-header">
       <h1>📅 家計簿</h1>
-      <div style="display:flex;gap:0.4rem;align-items:center">
-        <button class="cur-btn" id="cur-btn">¥</button>
-        <button class="income-btn" id="btn-add-income">＋収入</button>
-      </div>
+      <button class="income-btn" id="btn-add-income">＋収入</button>
     </div>
     <main>
       <div class="cal-nav">
@@ -333,10 +286,7 @@
 
   <!-- ② 一覧 -->
   <div id="page-list" class="page">
-    <div class="page-header">
-      <h1>💰 支出一覧</h1>
-      <button class="cur-btn" id="cur-btn-list">¥</button>
-    </div>
+    <div class="page-header"><h1>💰 支出一覧</h1></div>
     <main>
       <div class="list-nav">
         <div class="seg-btns" id="mode-btns">
@@ -355,10 +305,7 @@
 
   <!-- ③ サブスク -->
   <div id="page-subs" class="page">
-    <div class="page-header">
-      <h1>🔄 サブスク管理</h1>
-      <button class="cur-btn" id="cur-btn-subs">¥</button>
-    </div>
+    <div class="page-header"><h1>🔄 サブスク管理</h1></div>
     <main>
       <div id="subs-content"></div>
       <button class="add-dashed-btn" id="btn-add-sub">＋ サブスクを追加</button>
@@ -367,21 +314,12 @@
 
   <!-- タブバー -->
   <nav class="tab-bar">
-    <button class="tab-btn active" data-tab="home">
-      <span class="tab-icon">📅</span><span>カレンダー</span>
-    </button>
-    <button class="tab-btn" data-tab="list">
-      <span class="tab-icon">📋</span><span>一覧</span>
-    </button>
-    <button class="tab-btn" data-tab="subs">
-      <span class="tab-icon">🔄</span><span>サブスク</span>
-    </button>
+    <button class="tab-btn active" data-tab="home"><span class="tab-icon">📅</span><span>カレンダー</span></button>
+    <button class="tab-btn" data-tab="list"><span class="tab-icon">📋</span><span>一覧</span></button>
+    <button class="tab-btn" data-tab="subs"><span class="tab-icon">🔄</span><span>サブスク</span></button>
   </nav>
 
-  <!-- FAB -->
   <button class="fab" id="fab">＋</button>
-
-  <!-- オーバーレイ -->
   <div id="overlay" class="overlay"></div>
 
   <!-- 支出モーダル -->
@@ -401,13 +339,17 @@
       <input type="text" id="exp-desc" placeholder="例：ランチ" maxlength="30">
     </div>
     <div class="form-group">
+      <label class="form-label">通貨</label>
+      <div class="cur-chips" id="exp-cur-chips"></div>
+    </div>
+    <div class="form-group">
       <label class="form-label">金額</label>
       <div class="amount-wrap">
         <span class="cur-prefix" id="exp-cur-prefix">¥</span>
-        <input type="number" id="exp-amount" placeholder="0" inputmode="numeric" min="1">
+        <input type="number" id="exp-amount" placeholder="0" inputmode="numeric" min="0.01" step="any">
       </div>
     </div>
-    <button class="btn btn-primary" id="btn-save-exp">保存</button>
+    <button class="btn btn-primary" id="btn-save-exp">追加</button>
     <button class="btn btn-danger" id="btn-del-exp" style="display:none">この支出を削除</button>
   </div>
 
@@ -424,21 +366,18 @@
       <input type="text" id="income-desc" placeholder="例：給料、ボーナス" maxlength="30">
     </div>
     <div class="form-group">
+      <label class="form-label">通貨</label>
+      <div class="cur-chips" id="income-cur-chips"></div>
+    </div>
+    <div class="form-group">
       <label class="form-label">金額</label>
       <div class="amount-wrap">
         <span class="cur-prefix" id="income-cur-prefix">¥</span>
-        <input type="number" id="income-amount" placeholder="0" inputmode="numeric" min="1">
+        <input type="number" id="income-amount" placeholder="0" inputmode="numeric" min="0.01" step="any">
       </div>
     </div>
     <button class="btn btn-success" id="btn-save-income">追加</button>
     <button class="btn btn-danger" id="btn-del-income" style="display:none">この収入を削除</button>
-  </div>
-
-  <!-- 通貨選択モーダル -->
-  <div id="modal-currency" class="modal">
-    <div class="modal-handle"></div>
-    <div class="modal-title">通貨を選択</div>
-    <div id="cur-options"></div>
   </div>
 
   <!-- 日付詳細モーダル -->
@@ -459,10 +398,14 @@
       <input type="text" id="sub-name" placeholder="例：Netflix" maxlength="30">
     </div>
     <div class="form-group">
+      <label class="form-label">通貨</label>
+      <div class="cur-chips" id="sub-cur-chips"></div>
+    </div>
+    <div class="form-group">
       <label class="form-label">金額</label>
       <div class="amount-wrap">
         <span class="cur-prefix" id="sub-cur-prefix">¥</span>
-        <input type="number" id="sub-amount" placeholder="0" inputmode="numeric" min="1">
+        <input type="number" id="sub-amount" placeholder="0" inputmode="numeric" min="0.01" step="any">
       </div>
     </div>
     <div class="form-group">
@@ -495,7 +438,8 @@
 <script>
 // ── CONSTANTS ──
 const CATS = [
-  { id:'food',  icon:'🍽️', name:'食費',    color:'#f97316' },
+  { id:'food',  icon:'🛒',  name:'食費',    color:'#f97316' },
+  { id:'dine',  icon:'🍽️', name:'外食費',  color:'#fb923c' },
   { id:'trans', icon:'🚃',  name:'交通費',  color:'#3b82f6' },
   { id:'fun',   icon:'🎮',  name:'娯楽',    color:'#ec4899' },
   { id:'daily', icon:'🏠',  name:'日用品',  color:'#8b5cf6' },
@@ -507,17 +451,16 @@ const CATS = [
   { id:'other', icon:'📝',  name:'その他',  color:'#94a3b8' },
 ];
 const CURRENCIES = [
-  { code:'JPY', symbol:'¥', name:'日本円',     desc:'Japanese Yen' },
-  { code:'USD', symbol:'$', name:'米ドル',      desc:'US Dollar' },
-  { code:'EUR', symbol:'€', name:'ユーロ',      desc:'Euro' },
-  { code:'GBP', symbol:'£', name:'英ポンド',    desc:'British Pound' },
-  { code:'CNY', symbol:'¥', name:'中国元',      desc:'Chinese Yuan' },
+  { code:'JPY', symbol:'¥',  label:'¥ JPY' },
+  { code:'USD', symbol:'$',  label:'$ USD' },
+  { code:'EUR', symbol:'€',  label:'€ EUR' },
+  { code:'GBP', symbol:'£',  label:'£ GBP' },
+  { code:'CNY', symbol:'¥',  label:'¥ CNY' },
 ];
 const DAY_JP = ['日','月','火','水','木','金','土'];
 
 // ── DATA ──
 const KEY = 'kakeibo_v1';
-const KEY_CUR = 'kakeibo_currency';
 function load() {
   try {
     const d = JSON.parse(localStorage.getItem(KEY)) || {};
@@ -527,32 +470,49 @@ function load() {
 function save(d) { localStorage.setItem(KEY, JSON.stringify(d)); }
 function genId() { return Date.now().toString(36) + Math.random().toString(36).slice(2,5); }
 
-// ── CURRENCY ──
-let currency = localStorage.getItem(KEY_CUR) || 'JPY';
-function curInfo() { return CURRENCIES.find(c => c.code === currency) || CURRENCIES[0]; }
-function saveCurrency(code) { currency = code; localStorage.setItem(KEY_CUR, code); }
-
 // ── UTILS ──
 function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
-function fmt(n) {
-  const c = curInfo();
+
+function curSymbol(code) {
+  return (CURRENCIES.find(c => c.code === code) || CURRENCIES[0]).symbol;
+}
+
+function fmt(n, cur) {
+  cur = cur || 'JPY';
+  const sym = curSymbol(cur);
   const num = Number(n || 0);
-  if (currency === 'JPY' || currency === 'CNY') {
-    return c.symbol + Math.round(num).toLocaleString();
-  }
-  return c.symbol + num.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  if (cur === 'JPY' || cur === 'CNY') return sym + Math.round(num).toLocaleString();
+  return sym + num.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 }
-function fmtK(n) {
+
+function fmtK(n, cur) {
   if (!n) return '';
-  const c = curInfo();
-  if (currency === 'JPY' || currency === 'CNY') {
-    if (n >= 10000) return c.symbol + Math.round(n/1000) + 'k';
-    if (n >= 1000) return c.symbol + (n/1000).toFixed(1).replace(/\.0$/,'') + 'k';
-    return c.symbol + n;
+  cur = cur || 'JPY';
+  const sym = curSymbol(cur);
+  if (cur === 'JPY' || cur === 'CNY') {
+    if (n >= 10000) return sym + Math.round(n/1000) + 'k';
+    if (n >= 1000) return sym + (n/1000).toFixed(1).replace(/\.0$/,'') + 'k';
+    return sym + n;
   }
-  if (n >= 1000) return c.symbol + (n/1000).toFixed(1).replace(/\.0$/,'') + 'k';
-  return c.symbol + n.toFixed(0);
+  if (n >= 1000) return sym + (n/1000).toFixed(1).replace(/\.0$/,'') + 'k';
+  return sym + Number(n).toFixed(2);
 }
+
+// Group amounts by currency, return display string
+function totalsByCur(entries) {
+  const map = {};
+  entries.forEach(e => {
+    const c = e.currency || 'JPY';
+    map[c] = (map[c] || 0) + e.amount;
+  });
+  return map;
+}
+function fmtTotals(map) {
+  const entries = Object.entries(map);
+  if (!entries.length) return fmt(0, 'JPY');
+  return entries.map(([c, a]) => fmt(a, c)).join(' / ');
+}
+
 function catById(id) { return CATS.find(c=>c.id===id) || CATS[CATS.length-1]; }
 function todayStr() {
   const n = new Date();
@@ -568,10 +528,13 @@ function showToast(msg) {
   el.textContent = msg; el.classList.add('show');
   setTimeout(() => el.classList.remove('show'), 2200);
 }
-function updateCurrencyPrefixes() {
-  const sym = curInfo().symbol;
-  document.querySelectorAll('.cur-btn').forEach(el => el.textContent = sym);
-  document.querySelectorAll('.cur-prefix').forEach(el => el.textContent = sym);
+
+// ── CURRENCY CHIP RENDERER ──
+function renderCurChips(containerId, prefixId, selectedCode) {
+  document.getElementById(containerId).innerHTML = CURRENCIES.map(c =>
+    `<button class="cur-chip ${c.code===selectedCode?'selected':''}" data-cur="${c.code}">${c.label}</button>`
+  ).join('');
+  document.getElementById(prefixId).textContent = curSymbol(selectedCode);
 }
 
 // ── STATE ──
@@ -583,12 +546,14 @@ let editingSubId = null;
 let editingIncomeId = null;
 let selectedDate = null;
 let activeCat = 'food';
+let expCurrency = 'JPY';
+let incomeCurrency = 'JPY';
+let subCurrency = 'JPY';
 
 // ── WEEK HELPER ──
 function getWeekStart(date) {
   const d = new Date(date);
-  const day = d.getDay();
-  const diff = day === 0 ? -6 : 1 - day;
+  const diff = d.getDay() === 0 ? -6 : 1 - d.getDay();
   d.setDate(d.getDate() + diff);
   d.setHours(0,0,0,0);
   return d;
@@ -597,37 +562,27 @@ function getWeekStart(date) {
 // ── PIE CHART SVG ──
 function pieChartSVG(expenses, size) {
   size = size || 140;
+  // Group by category ignoring currency for pie (show proportions by number)
   const byCat = {};
   expenses.forEach(e => { byCat[e.cat] = (byCat[e.cat]||0) + e.amount; });
   const entries = Object.entries(byCat).sort((a,b) => b[1]-a[1]);
   const total = entries.reduce((s,[,v]) => s+v, 0);
   if (!total) return `<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}"><circle cx="${size/2}" cy="${size/2}" r="${size/2-4}" fill="#e2e8f0"/><circle cx="${size/2}" cy="${size/2}" r="${(size/2-4)*0.55}" fill="#f8fafc"/></svg>`;
-
   const cx = size/2, cy = size/2, r = size/2 - 4, ir = r * 0.58;
-
   function arc(angle, radius) {
-    return [
-      cx + radius * Math.cos(angle - Math.PI / 2),
-      cy + radius * Math.sin(angle - Math.PI / 2)
-    ];
+    return [cx + radius * Math.cos(angle - Math.PI/2), cy + radius * Math.sin(angle - Math.PI/2)];
   }
-
-  let paths = '';
-  let start = 0;
+  let paths = '', start = 0;
   entries.forEach(([catId, amt]) => {
     const slice = (amt / total) * 2 * Math.PI;
     if (slice < 0.005) { start += slice; return; }
-    const end = start + slice;
-    const la = slice > Math.PI ? 1 : 0;
-    const [x1,y1] = arc(start, r);
-    const [x2,y2] = arc(end, r);
-    const [ix1,iy1] = arc(start, ir);
-    const [ix2,iy2] = arc(end, ir);
+    const end = start + slice, la = slice > Math.PI ? 1 : 0;
+    const [x1,y1] = arc(start, r), [x2,y2] = arc(end, r);
+    const [ix1,iy1] = arc(start, ir), [ix2,iy2] = arc(end, ir);
     const cat = catById(catId);
     paths += `<path d="M${x1.toFixed(2)},${y1.toFixed(2)} A${r},${r},0,${la},1,${x2.toFixed(2)},${y2.toFixed(2)} L${ix2.toFixed(2)},${iy2.toFixed(2)} A${ir},${ir},0,${la},0,${ix1.toFixed(2)},${iy1.toFixed(2)} Z" fill="${cat.color}"/>`;
     start = end;
   });
-
   return `<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" style="display:block">${paths}</svg>`;
 }
 
@@ -635,14 +590,22 @@ function pieLegendHTML(expenses) {
   const byCat = {};
   expenses.forEach(e => { byCat[e.cat] = (byCat[e.cat]||0) + e.amount; });
   const total = Object.values(byCat).reduce((s,v)=>s+v, 0);
-  return Object.entries(byCat).sort((a,b)=>b[1]-a[1]).slice(0, 6).map(([catId, amt]) => {
+  // Show amount per category with currency
+  const byCatDetailed = {};
+  expenses.forEach(e => {
+    if (!byCatDetailed[e.cat]) byCatDetailed[e.cat] = {};
+    const c = e.currency || 'JPY';
+    byCatDetailed[e.cat][c] = (byCatDetailed[e.cat][c]||0) + e.amount;
+  });
+  return Object.entries(byCat).sort((a,b)=>b[1]-a[1]).slice(0,6).map(([catId, amt]) => {
     const c = catById(catId);
     const pct = total ? Math.round(amt/total*100) : 0;
+    const amtStr = fmtTotals(byCatDetailed[catId]);
     return `<div class="legend-item">
       <span class="legend-dot" style="background:${c.color}"></span>
       <span class="legend-name">${c.icon} ${c.name}</span>
       <span class="legend-pct">${pct}%</span>
-      <span class="legend-amt">${fmt(amt)}</span>
+      <span class="legend-amt">${amtStr}</span>
     </div>`;
   }).join('');
 }
@@ -652,26 +615,35 @@ function renderCalendar() {
   document.getElementById('cal-month-label').textContent = `${calYear}年${calMonth+1}月`;
   const data = load();
 
-  const dayExpTotals = {};
+  // Day totals grouped by currency
+  const dayExp = {}; // {day: {cur: amount}}
   data.expenses.forEach(e => {
     const d = localDate(e.date);
     if (d.getFullYear()===calYear && d.getMonth()===calMonth) {
-      const day = d.getDate();
-      dayExpTotals[day] = (dayExpTotals[day]||0) + e.amount;
+      const day = d.getDate(), c = e.currency||'JPY';
+      if (!dayExp[day]) dayExp[day] = {};
+      dayExp[day][c] = (dayExp[day][c]||0) + e.amount;
     }
   });
-  const monthExp = Object.values(dayExpTotals).reduce((s,v)=>s+v,0);
-
-  const dayIncTotals = {};
+  const dayInc = {};
   data.incomes.forEach(e => {
     const d = localDate(e.date);
     if (d.getFullYear()===calYear && d.getMonth()===calMonth) {
-      const day = d.getDate();
-      dayIncTotals[day] = (dayIncTotals[day]||0) + e.amount;
+      const day = d.getDate(), c = e.currency||'JPY';
+      if (!dayInc[day]) dayInc[day] = {};
+      dayInc[day][c] = (dayInc[day][c]||0) + e.amount;
     }
   });
-  const monthInc = Object.values(dayIncTotals).reduce((s,v)=>s+v,0);
-  const balance = monthInc - monthExp;
+
+  // Monthly totals
+  const monthExpMap = totalsByCur(data.expenses.filter(e => {
+    const d = localDate(e.date);
+    return d.getFullYear()===calYear && d.getMonth()===calMonth;
+  }));
+  const monthIncMap = totalsByCur(data.incomes.filter(e => {
+    const d = localDate(e.date);
+    return d.getFullYear()===calYear && d.getMonth()===calMonth;
+  }));
 
   const firstDow = new Date(calYear, calMonth, 1).getDay();
   const daysInMonth = new Date(calYear, calMonth+1, 0).getDate();
@@ -681,71 +653,71 @@ function renderCalendar() {
   for (let d=1; d<=daysInMonth; d++) {
     const dateStr = `${calYear}-${String(calMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
     const dow = (firstDow + d - 1) % 7;
-    const expAmt = dayExpTotals[d] || 0;
-    const incAmt = dayIncTotals[d] || 0;
-    const hasBoth = expAmt && incAmt;
-    const cls = [
-      'cal-day',
-      hasBoth ? 'has-both' : expAmt ? 'has-exp' : incAmt ? 'has-inc' : '',
-      dateStr===tStr ? 'today' : '',
-      dow===0 ? 'sunday' : '',
-      dow===6 ? 'saturday' : ''
+    const hasExp = dayExp[d] && Object.keys(dayExp[d]).length > 0;
+    const hasInc = dayInc[d] && Object.keys(dayInc[d]).length > 0;
+    const cls = ['cal-day',
+      hasExp && hasInc ? 'has-both' : hasExp ? 'has-exp' : hasInc ? 'has-inc' : '',
+      dateStr===tStr ? 'today' : '', dow===0 ? 'sunday' : '', dow===6 ? 'saturday' : ''
     ].filter(Boolean).join(' ');
+
+    // Show up to 2 currency amounts per type in cell
+    const expLines = hasExp ? Object.entries(dayExp[d]).slice(0,2)
+      .map(([c,a]) => `<div class="cal-day-amt">${fmtK(a,c)}</div>`).join('') : '';
+    const incLines = hasInc ? Object.entries(dayInc[d]).slice(0,2)
+      .map(([c,a]) => `<div class="cal-day-inc">${fmtK(a,c)}</div>`).join('') : '';
+
     html += `<div class="${cls}" data-date="${dateStr}">
-      <div class="cal-day-num">${d}</div>
-      ${expAmt ? `<div class="cal-day-amt">${fmtK(expAmt)}</div>` : ''}
-      ${incAmt ? `<div class="cal-day-inc">${fmtK(incAmt)}</div>` : ''}
+      <div class="cal-day-num">${d}</div>${expLines}${incLines}
     </div>`;
   }
   document.getElementById('cal-grid').innerHTML = html;
 
   // Monthly summary
-  const balCls = balance > 0 ? 'amount-pos' : balance < 0 ? 'amount-neg' : 'amount-zero';
-  const balSign = balance > 0 ? '+' : '';
+  const incStr = fmtTotals(monthIncMap);
+  const expStr = fmtTotals(monthExpMap);
+  const incCurs = Object.keys(monthIncMap), expCurs = Object.keys(monthExpMap);
+  const allCurs = [...new Set([...incCurs, ...expCurs])];
+  let balHTML = '';
+  if (allCurs.length === 1) {
+    const c = allCurs[0];
+    const bal = (monthIncMap[c]||0) - (monthExpMap[c]||0);
+    const cls = bal > 0 ? 'amount-pos' : bal < 0 ? 'amount-neg' : 'amount-zero';
+    const sign = bal > 0 ? '+' : '';
+    balHTML = `<div class="month-row"><span class="month-row-label">📊 収支</span><span class="month-row-amount ${cls}">${sign}${fmt(bal,c)}</span></div>`;
+  } else if (allCurs.length > 1) {
+    balHTML = `<div class="month-row"><span class="month-row-label">📊 収支</span><span class="month-row-amount amount-mixed">複数通貨</span></div>`;
+  }
+
   document.getElementById('month-summary').innerHTML = `
     <div class="month-summary-card">
-      <div class="month-row">
-        <span class="month-row-label">💚 収入</span>
-        <span class="month-row-amount amount-inc">${fmt(monthInc)}</span>
-      </div>
-      <div class="month-row">
-        <span class="month-row-label">💸 支出</span>
-        <span class="month-row-amount amount-exp">${fmt(monthExp)}</span>
-      </div>
-      <div class="month-row">
-        <span class="month-row-label">📊 収支</span>
-        <span class="month-row-amount ${balCls}">${balSign}${fmt(balance)}</span>
-      </div>
+      <div class="month-row"><span class="month-row-label">💚 収入</span><span class="month-row-amount amount-inc">${incStr}</span></div>
+      <div class="month-row"><span class="month-row-label">💸 支出</span><span class="month-row-amount amount-exp">${expStr}</span></div>
+      ${balHTML}
     </div>`;
 }
 
 // ── LIST ──
 function summaryHTML(expenses) {
-  const total = expenses.reduce((s,e)=>s+e.amount,0);
+  const totalMap = totalsByCur(expenses);
+  const totalStr = fmtTotals(totalMap);
   const byCat = {};
   expenses.forEach(e => { byCat[e.cat]=(byCat[e.cat]||0)+e.amount; });
   const sorted = Object.entries(byCat).sort((a,b)=>b[1]-a[1]);
   const maxAmt = sorted[0]?.[1] || 1;
-
-  const pieSection = total ? `<div class="chart-section">
-    <div class="chart-svg-wrap">${pieChartSVG(expenses, 130)}</div>
+  const pieSection = expenses.length ? `<div class="chart-section">
+    <div class="chart-svg-wrap">${pieChartSVG(expenses,130)}</div>
     <div class="chart-legend">${pieLegendHTML(expenses)}</div>
   </div>` : '';
-
   const bars = sorted.map(([catId, amt]) => {
     const c = catById(catId);
     const pct = Math.round(amt/maxAmt*100);
     return `<div class="cat-bar-row">
-      <div class="cat-bar-header">
-        <span class="cat-bar-label">${c.icon} ${c.name}</span>
-        <span style="font-size:0.72rem;font-weight:700">${fmt(amt)}</span>
-      </div>
+      <div class="cat-bar-header"><span class="cat-bar-label">${c.icon} ${c.name}</span><span style="font-size:0.72rem;font-weight:700">${amt}</span></div>
       <div class="cat-bar-wrap"><div class="cat-bar" style="width:${pct}%;background:${c.color}"></div></div>
     </div>`;
   }).join('');
-
   return `<div class="summary-card">
-    <div class="summary-total"><span>合計</span>${fmt(total)}</div>
+    <div class="summary-total"><span>合計</span>${totalStr}</div>
     ${pieSection}
     ${bars || '<div style="color:var(--text3);font-size:0.8rem">支出がありません</div>'}
   </div>`;
@@ -757,7 +729,7 @@ function expenseGroupHTML(expenses) {
   expenses.forEach(e => { if(!groups[e.date]) groups[e.date]=[]; groups[e.date].push(e); });
   return Object.keys(groups).sort().reverse().map(date => {
     const items = groups[date];
-    const dayTotal = items.reduce((s,e)=>s+e.amount,0);
+    const dayMap = totalsByCur(items);
     const itemsHTML = items.map(e => {
       const c = catById(e.cat);
       return `<div class="exp-item" data-id="${e.id}">
@@ -766,12 +738,12 @@ function expenseGroupHTML(expenses) {
           <div class="exp-desc">${esc(e.desc||c.name)}</div>
           <div class="exp-cat-label">${c.name}</div>
         </div>
-        <span class="exp-amount">${fmt(e.amount)}</span>
+        <span class="exp-amount">${fmt(e.amount, e.currency||'JPY')}</span>
         <button class="exp-delete" data-id="${e.id}">✕</button>
       </div>`;
     }).join('');
     return `<div class="exp-date-group">
-      <div class="exp-date-header"><span>${dateLabel(date)}</span><span>${fmt(dayTotal)}</span></div>
+      <div class="exp-date-header"><span>${dateLabel(date)}</span><span>${fmtTotals(dayMap)}</span></div>
       ${itemsHTML}
     </div>`;
   }).join('');
@@ -817,27 +789,41 @@ function nextBillingDate(sub) {
 function renderSubs() {
   const data = load();
   const subs = data.subscriptions || [];
-  const monthlyTotal = subs.reduce((s,sub) => {
-    return s + (sub.cycle==='monthly' ? sub.amount : Math.round(sub.amount/12));
-  }, 0);
-  const yearlyTotal = subs.filter(s=>s.cycle==='yearly').reduce((s,sub)=>s+sub.amount,0);
+
+  // Monthly total grouped by currency
+  const monthMap = {};
+  subs.forEach(sub => {
+    const c = sub.currency || 'JPY';
+    const monthly = sub.cycle==='monthly' ? sub.amount : sub.amount/12;
+    monthMap[c] = (monthMap[c]||0) + monthly;
+  });
+  const monthStr = Object.entries(monthMap).map(([c,a]) => fmt(a,c)).join(' / ') || fmt(0,'JPY');
+
+  const yearlyMap = {};
+  subs.filter(s=>s.cycle==='yearly').forEach(sub => {
+    const c = sub.currency || 'JPY';
+    yearlyMap[c] = (yearlyMap[c]||0) + sub.amount;
+  });
+  const yearlyStr = Object.entries(yearlyMap).map(([c,a]) => fmt(a,c)).join(' / ');
 
   const totalCard = `<div class="subs-total-card">
     <div class="subs-total-label">月あたりの合計</div>
-    <div class="subs-total-amount">${fmt(monthlyTotal)}<span style="font-size:0.9rem;opacity:0.8">/月</span></div>
-    ${yearlyTotal ? `<div class="subs-total-note">年払い含む（${fmt(yearlyTotal)}/年）</div>` : ''}
+    <div class="subs-total-amount">${monthStr}<span style="font-size:0.85rem;opacity:0.8">/月</span></div>
+    ${yearlyStr ? `<div class="subs-total-note">年払い含む（${yearlyStr}/年）</div>` : ''}
   </div>`;
 
   const subItems = subs.length ? subs.map(sub => {
     const cycleLabel = sub.cycle==='monthly' ? `毎月${sub.day||'?'}日` : `毎年${sub.month||'?'}月${sub.day||'?'}日`;
     const nextLabel = nextBillingDate(sub);
+    const cur = sub.currency || 'JPY';
+    const badge = cur !== 'JPY' ? `<span class="sub-cur-badge">${cur}</span>` : '';
     return `<div class="sub-item">
       <span class="sub-icon">🔄</span>
       <div class="sub-info">
-        <div class="sub-name">${esc(sub.name)}</div>
+        <div class="sub-name">${esc(sub.name)}${badge}</div>
         <div class="sub-detail">${cycleLabel}　次回: ${nextLabel}</div>
       </div>
-      <span class="sub-amount">${fmt(sub.amount)}</span>
+      <span class="sub-amount">${fmt(sub.amount, cur)}</span>
       <button class="sub-quick-btn" data-sub-id="${sub.id}">追加</button>
       <button class="sub-edit-btn" data-sub-id="${sub.id}">✏️</button>
     </div>`;
@@ -847,10 +833,7 @@ function renderSubs() {
 }
 
 // ── MODALS ──
-function openModal(id) {
-  document.getElementById(id).classList.add('open');
-  document.getElementById('overlay').classList.add('open');
-}
+function openModal(id) { document.getElementById(id).classList.add('open'); document.getElementById('overlay').classList.add('open'); }
 function closeModal(id) {
   document.getElementById(id).classList.remove('open');
   if (!document.querySelector('.modal.open')) document.getElementById('overlay').classList.remove('open');
@@ -860,6 +843,7 @@ function closeAllModals() {
   document.getElementById('overlay').classList.remove('open');
 }
 
+// ── EXPENSE MODAL ──
 function openExpModal(expId, prefillDate) {
   editingExpId = expId || null;
   const isEdit = !!expId;
@@ -874,13 +858,16 @@ function openExpModal(expId, prefillDate) {
     document.getElementById('exp-desc').value = exp.desc || '';
     document.getElementById('exp-amount').value = exp.amount;
     activeCat = exp.cat;
+    expCurrency = exp.currency || 'JPY';
   } else {
     document.getElementById('exp-date').value = prefillDate || todayStr();
     document.getElementById('exp-desc').value = '';
     document.getElementById('exp-amount').value = '';
     activeCat = 'food';
+    expCurrency = 'JPY';
   }
   renderCatChips();
+  renderCurChips('exp-cur-chips', 'exp-cur-prefix', expCurrency);
   openModal('modal-expense');
   setTimeout(() => document.getElementById('exp-amount').focus(), 300);
 }
@@ -899,17 +886,14 @@ function saveExpense() {
   const amount = parseFloat(document.getElementById('exp-amount').value);
   if (!date) { showToast('日付を選択してください'); return; }
   if (!amount || amount <= 0) { showToast('金額を入力してください'); return; }
-
   const data = load();
   if (editingExpId) {
     const exp = data.expenses.find(e=>e.id===editingExpId);
-    if (exp) { exp.date=date; exp.cat=activeCat; exp.desc=desc; exp.amount=amount; }
+    if (exp) { exp.date=date; exp.cat=activeCat; exp.desc=desc; exp.amount=amount; exp.currency=expCurrency; }
   } else {
-    data.expenses.push({ id:genId(), date, cat:activeCat, desc, amount });
+    data.expenses.push({ id:genId(), date, cat:activeCat, desc, amount, currency:expCurrency });
   }
-  save(data);
-  closeAllModals();
-  refresh();
+  save(data); closeAllModals(); refresh();
   showToast(editingExpId ? '更新しました' : '追加しました');
 }
 
@@ -917,10 +901,7 @@ function deleteExpense(id) {
   if (!confirm('この支出を削除しますか？')) return;
   const data = load();
   data.expenses = data.expenses.filter(e=>e.id!==id);
-  save(data);
-  closeAllModals();
-  refresh();
-  showToast('削除しました');
+  save(data); closeAllModals(); refresh(); showToast('削除しました');
 }
 
 // ── INCOME MODAL ──
@@ -930,18 +911,20 @@ function openIncomeModal(incId, prefillDate) {
   document.getElementById('income-modal-title').textContent = isEdit ? '収入を編集' : '収入を追加';
   document.getElementById('btn-save-income').textContent = isEdit ? '保存' : '追加';
   document.getElementById('btn-del-income').style.display = isEdit ? '' : 'none';
-
   if (isEdit) {
     const inc = load().incomes.find(e=>e.id===incId);
     if (!inc) return;
     document.getElementById('income-date').value = inc.date;
     document.getElementById('income-desc').value = inc.desc || '';
     document.getElementById('income-amount').value = inc.amount;
+    incomeCurrency = inc.currency || 'JPY';
   } else {
     document.getElementById('income-date').value = prefillDate || todayStr();
     document.getElementById('income-desc').value = '';
     document.getElementById('income-amount').value = '';
+    incomeCurrency = 'JPY';
   }
+  renderCurChips('income-cur-chips', 'income-cur-prefix', incomeCurrency);
   openModal('modal-income');
   setTimeout(() => document.getElementById('income-amount').focus(), 300);
 }
@@ -952,17 +935,14 @@ function saveIncome() {
   const amount = parseFloat(document.getElementById('income-amount').value);
   if (!date) { showToast('日付を選択してください'); return; }
   if (!amount || amount <= 0) { showToast('金額を入力してください'); return; }
-
   const data = load();
   if (editingIncomeId) {
     const inc = data.incomes.find(e=>e.id===editingIncomeId);
-    if (inc) { inc.date=date; inc.desc=desc; inc.amount=amount; }
+    if (inc) { inc.date=date; inc.desc=desc; inc.amount=amount; inc.currency=incomeCurrency; }
   } else {
-    data.incomes.push({ id:genId(), date, desc, amount });
+    data.incomes.push({ id:genId(), date, desc, amount, currency:incomeCurrency });
   }
-  save(data);
-  closeAllModals();
-  refresh();
+  save(data); closeAllModals(); refresh();
   showToast(editingIncomeId ? '更新しました' : '収入を追加しました');
 }
 
@@ -970,32 +950,7 @@ function deleteIncome(id) {
   if (!confirm('この収入を削除しますか？')) return;
   const data = load();
   data.incomes = data.incomes.filter(e=>e.id!==id);
-  save(data);
-  closeAllModals();
-  refresh();
-  showToast('削除しました');
-}
-
-// ── CURRENCY MODAL ──
-function openCurrencyModal() {
-  document.getElementById('cur-options').innerHTML = CURRENCIES.map(c => `
-    <div class="cur-option ${c.code===currency?'selected':''}" data-code="${c.code}">
-      <span class="cur-symbol">${c.symbol}</span>
-      <div>
-        <div class="cur-name">${c.name} (${c.code})</div>
-        <div class="cur-desc">${c.desc}</div>
-      </div>
-      ${c.code===currency ? '<span class="cur-check">✓</span>' : ''}
-    </div>`).join('');
-  openModal('modal-currency');
-}
-
-function selectCurrency(code) {
-  saveCurrency(code);
-  updateCurrencyPrefixes();
-  closeAllModals();
-  refresh();
-  showToast(`通貨を ${code} に変更しました`);
+  save(data); closeAllModals(); refresh(); showToast('削除しました');
 }
 
 // ── DAY MODAL ──
@@ -1005,38 +960,34 @@ function openDayModal(dateStr) {
   const data = load();
   const expenses = data.expenses.filter(e=>e.date===dateStr);
   const incomes = data.incomes.filter(e=>e.date===dateStr);
-
   let html = '';
   if (!expenses.length && !incomes.length) {
     html = '<div style="color:var(--text3);font-size:0.85rem;padding:0.5rem 0">記録なし</div>';
   } else {
-    // Income items
-    if (incomes.length) {
-      html += incomes.map(e => `
-        <div class="day-exp-item" data-income-id="${e.id}" style="cursor:pointer">
-          <span style="font-size:1.1rem">💚</span>
-          <div style="flex:1;min-width:0">
-            <div style="font-size:0.88rem;font-weight:600;color:var(--green)">${esc(e.desc||'収入')}</div>
-            <div style="font-size:0.68rem;color:var(--text3)">収入</div>
-          </div>
-          <span style="font-size:0.88rem;font-weight:700;color:var(--green)">+${fmt(e.amount)}</span>
-        </div>`).join('');
-    }
-    // Expense items
+    incomes.forEach(e => {
+      html += `<div class="day-exp-item" data-income-id="${e.id}" style="cursor:pointer">
+        <span style="font-size:1.1rem">💚</span>
+        <div style="flex:1;min-width:0">
+          <div style="font-size:0.88rem;font-weight:600;color:var(--green)">${esc(e.desc||'収入')}</div>
+          <div style="font-size:0.68rem;color:var(--text3)">収入</div>
+        </div>
+        <span style="font-size:0.88rem;font-weight:700;color:var(--green)">+${fmt(e.amount, e.currency||'JPY')}</span>
+      </div>`;
+    });
     if (expenses.length) {
-      const total = expenses.reduce((s,e)=>s+e.amount,0);
-      html += expenses.map(e => {
+      const dayMap = totalsByCur(expenses);
+      expenses.forEach(e => {
         const c = catById(e.cat);
-        return `<div class="day-exp-item" data-id="${e.id}" style="cursor:pointer">
+        html += `<div class="day-exp-item" data-id="${e.id}" style="cursor:pointer">
           <span style="font-size:1.1rem">${c.icon}</span>
           <div style="flex:1;min-width:0">
-            <div style="font-size:0.88rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(e.desc||c.name)}</div>
+            <div style="font-size:0.88rem;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(e.desc||c.name)}</div>
             <div style="font-size:0.68rem;color:var(--text3)">${c.name}</div>
           </div>
-          <span style="font-size:0.88rem;font-weight:700">${fmt(e.amount)}</span>
+          <span style="font-size:0.88rem;font-weight:700">${fmt(e.amount, e.currency||'JPY')}</span>
         </div>`;
-      }).join('');
-      html += `<div class="day-total-row"><span>支出合計</span><span style="color:var(--accent)">${fmt(total)}</span></div>`;
+      });
+      html += `<div class="day-total-row"><span>支出合計</span><span style="color:var(--accent)">${fmtTotals(dayMap)}</span></div>`;
     }
   }
   document.getElementById('day-exp-list').innerHTML = html;
@@ -1044,7 +995,7 @@ function openDayModal(dateStr) {
   openModal('modal-day');
 }
 
-// ── SUBSCRIPTION MODAL ──
+// ── SUB MODAL ──
 function openSubModal(subId) {
   editingSubId = subId || null;
   const isEdit = !!subId;
@@ -1059,6 +1010,7 @@ function openSubModal(subId) {
     document.getElementById('sub-day').value = sub.day||'';
     document.getElementById('sub-bmonth').value = sub.month||'';
     document.getElementById('sub-bday').value = sub.bday||sub.day||'';
+    subCurrency = sub.currency || 'JPY';
     toggleSubCycleFields(sub.cycle);
   } else {
     document.getElementById('sub-name').value = '';
@@ -1067,8 +1019,10 @@ function openSubModal(subId) {
     document.getElementById('sub-day').value = '';
     document.getElementById('sub-bmonth').value = '';
     document.getElementById('sub-bday').value = '';
+    subCurrency = 'JPY';
     toggleSubCycleFields('monthly');
   }
+  renderCurChips('sub-cur-chips', 'sub-cur-prefix', subCurrency);
   openModal('modal-sub');
 }
 
@@ -1083,18 +1037,17 @@ function saveSub() {
   const cycle = document.getElementById('sub-cycle').value;
   if (!name) { showToast('サービス名を入力してください'); return; }
   if (!amount || amount <= 0) { showToast('金額を入力してください'); return; }
-
   const data = load();
   if (!data.subscriptions) data.subscriptions = [];
   if (editingSubId) {
     const sub = data.subscriptions.find(s=>s.id===editingSubId);
     if (sub) {
-      sub.name=name; sub.amount=amount; sub.cycle=cycle;
+      sub.name=name; sub.amount=amount; sub.cycle=cycle; sub.currency=subCurrency;
       if (cycle==='monthly') sub.day=parseInt(document.getElementById('sub-day').value)||1;
       else { sub.month=parseInt(document.getElementById('sub-bmonth').value)||1; sub.day=parseInt(document.getElementById('sub-bday').value)||1; }
     }
   } else {
-    const sub = { id:genId(), name, amount, cycle };
+    const sub = { id:genId(), name, amount, cycle, currency:subCurrency };
     if (cycle==='monthly') sub.day = parseInt(document.getElementById('sub-day').value)||1;
     else { sub.month=parseInt(document.getElementById('sub-bmonth').value)||1; sub.day=parseInt(document.getElementById('sub-bday').value)||1; }
     data.subscriptions.push(sub);
@@ -1114,16 +1067,12 @@ function addSubAsExpense(subId) {
   const sub = (load().subscriptions||[]).find(s=>s.id===subId);
   if (!sub) return;
   const data = load();
-  data.expenses.push({ id:genId(), date:todayStr(), cat:'sub', desc:sub.name, amount:sub.amount });
+  data.expenses.push({ id:genId(), date:todayStr(), cat:'sub', desc:sub.name, amount:sub.amount, currency:sub.currency||'JPY' });
   save(data); refresh(); showToast(`${sub.name} を支出に追加しました`);
 }
 
 // ── REFRESH ──
-function refresh() {
-  renderCalendar();
-  renderList();
-  renderSubs();
-}
+function refresh() { renderCalendar(); renderList(); renderSubs(); }
 
 // ── TABS ──
 function switchTab(tab) {
@@ -1135,34 +1084,13 @@ function switchTab(tab) {
 
 // ── LISTENERS ──
 function initListeners() {
-  document.querySelectorAll('.tab-btn').forEach(btn => {
-    btn.addEventListener('click', () => switchTab(btn.dataset.tab));
-  });
-
+  document.querySelectorAll('.tab-btn').forEach(btn => btn.addEventListener('click', () => switchTab(btn.dataset.tab)));
   document.getElementById('fab').addEventListener('click', () => openExpModal());
-
   document.getElementById('btn-add-income').addEventListener('click', () => openIncomeModal());
 
-  document.getElementById('cur-btn').addEventListener('click', openCurrencyModal);
-  document.getElementById('cur-btn-list').addEventListener('click', openCurrencyModal);
-  document.getElementById('cur-btn-subs').addEventListener('click', openCurrencyModal);
-
-  document.getElementById('cur-options').addEventListener('click', e => {
-    const opt = e.target.closest('.cur-option');
-    if (opt) selectCurrency(opt.dataset.code);
-  });
-
-  document.getElementById('cal-prev').addEventListener('click', () => {
-    calMonth--; if (calMonth<0) { calMonth=11; calYear--; } renderCalendar();
-  });
-  document.getElementById('cal-next').addEventListener('click', () => {
-    calMonth++; if (calMonth>11) { calMonth=0; calYear++; } renderCalendar();
-  });
-
-  document.getElementById('cal-grid').addEventListener('click', e => {
-    const day = e.target.closest('.cal-day:not(.empty)');
-    if (day) openDayModal(day.dataset.date);
-  });
+  document.getElementById('cal-prev').addEventListener('click', () => { calMonth--; if(calMonth<0){calMonth=11;calYear--;} renderCalendar(); });
+  document.getElementById('cal-next').addEventListener('click', () => { calMonth++; if(calMonth>11){calMonth=0;calYear++;} renderCalendar(); });
+  document.getElementById('cal-grid').addEventListener('click', e => { const day = e.target.closest('.cal-day:not(.empty)'); if(day) openDayModal(day.dataset.date); });
 
   document.getElementById('mode-btns').addEventListener('click', e => {
     const btn = e.target.closest('.seg-btn');
@@ -1171,14 +1099,13 @@ function initListeners() {
     document.querySelectorAll('#mode-btns .seg-btn').forEach(b => b.classList.toggle('active', b===btn));
     renderList();
   });
-
   document.getElementById('period-prev').addEventListener('click', () => {
-    if (listMode==='month') { listMonth--; if (listMonth<0) { listMonth=11; listYear--; } }
+    if (listMode==='month') { listMonth--; if(listMonth<0){listMonth=11;listYear--;} }
     else { listWeekStart.setDate(listWeekStart.getDate()-7); }
     renderList();
   });
   document.getElementById('period-next').addEventListener('click', () => {
-    if (listMode==='month') { listMonth++; if (listMonth>11) { listMonth=0; listYear++; } }
+    if (listMode==='month') { listMonth++; if(listMonth>11){listMonth=0;listYear++;} }
     else { listWeekStart.setDate(listWeekStart.getDate()+7); }
     renderList();
   });
@@ -1197,20 +1124,36 @@ function initListeners() {
     document.querySelectorAll('.cat-chip').forEach(c => c.classList.toggle('selected', c.dataset.cat===activeCat));
   });
 
+  // Currency chips in each modal
+  document.getElementById('exp-cur-chips').addEventListener('click', e => {
+    const chip = e.target.closest('.cur-chip');
+    if (!chip) return;
+    expCurrency = chip.dataset.cur;
+    document.querySelectorAll('#exp-cur-chips .cur-chip').forEach(c => c.classList.toggle('selected', c.dataset.cur===expCurrency));
+    document.getElementById('exp-cur-prefix').textContent = curSymbol(expCurrency);
+  });
+  document.getElementById('income-cur-chips').addEventListener('click', e => {
+    const chip = e.target.closest('.cur-chip');
+    if (!chip) return;
+    incomeCurrency = chip.dataset.cur;
+    document.querySelectorAll('#income-cur-chips .cur-chip').forEach(c => c.classList.toggle('selected', c.dataset.cur===incomeCurrency));
+    document.getElementById('income-cur-prefix').textContent = curSymbol(incomeCurrency);
+  });
+  document.getElementById('sub-cur-chips').addEventListener('click', e => {
+    const chip = e.target.closest('.cur-chip');
+    if (!chip) return;
+    subCurrency = chip.dataset.cur;
+    document.querySelectorAll('#sub-cur-chips .cur-chip').forEach(c => c.classList.toggle('selected', c.dataset.cur===subCurrency));
+    document.getElementById('sub-cur-prefix').textContent = curSymbol(subCurrency);
+  });
+
   document.getElementById('btn-save-exp').addEventListener('click', saveExpense);
   document.getElementById('btn-del-exp').addEventListener('click', () => deleteExpense(editingExpId));
-
   document.getElementById('btn-save-income').addEventListener('click', saveIncome);
   document.getElementById('btn-del-income').addEventListener('click', () => deleteIncome(editingIncomeId));
 
-  document.getElementById('btn-add-day-exp').addEventListener('click', () => {
-    closeModal('modal-day');
-    openExpModal(null, selectedDate);
-  });
-  document.getElementById('btn-add-day-inc').addEventListener('click', () => {
-    closeModal('modal-day');
-    openIncomeModal(null, selectedDate);
-  });
+  document.getElementById('btn-add-day-exp').addEventListener('click', () => { closeModal('modal-day'); openExpModal(null, selectedDate); });
+  document.getElementById('btn-add-day-inc').addEventListener('click', () => { closeModal('modal-day'); openIncomeModal(null, selectedDate); });
   document.getElementById('day-exp-list').addEventListener('click', e => {
     const incItem = e.target.closest('[data-income-id]');
     if (incItem) { closeModal('modal-day'); openIncomeModal(incItem.dataset.incomeId); return; }
@@ -1222,7 +1165,6 @@ function initListeners() {
   document.getElementById('btn-save-sub').addEventListener('click', saveSub);
   document.getElementById('btn-del-sub').addEventListener('click', () => deleteSub(editingSubId));
   document.getElementById('sub-cycle').addEventListener('change', e => toggleSubCycleFields(e.target.value));
-
   document.getElementById('subs-content').addEventListener('click', e => {
     const quickBtn = e.target.closest('.sub-quick-btn');
     if (quickBtn) { addSubAsExpense(quickBtn.dataset.subId); return; }
@@ -1239,11 +1181,7 @@ function init() {
   calYear = now.getFullYear(); calMonth = now.getMonth();
   listYear = now.getFullYear(); listMonth = now.getMonth();
   listWeekStart = getWeekStart(now);
-
-  updateCurrencyPrefixes();
-  renderCalendar();
-  renderList();
-  renderSubs();
+  refresh();
   initListeners();
 }
 
@@ -1253,9 +1191,7 @@ if ('serviceWorker' in navigator) {
   try {
     const hadController = !!navigator.serviceWorker.controller;
     navigator.serviceWorker.register('./sw.js');
-    navigator.serviceWorker.addEventListener('controllerchange', () => {
-      if (hadController) window.location.reload();
-    });
+    navigator.serviceWorker.addEventListener('controllerchange', () => { if(hadController) window.location.reload(); });
   } catch(e) {}
 }
 </script>
