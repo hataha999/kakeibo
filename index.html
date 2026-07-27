@@ -103,7 +103,6 @@
     .amount-pos { color: var(--green); }
     .amount-neg { color: var(--red); }
     .amount-zero { color: var(--text3); }
-    .amount-mixed { color: var(--text2); font-size: 0.8rem; }
 
     /* LIST */
     .list-nav { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.75rem; flex-wrap: wrap; }
@@ -172,7 +171,6 @@
     .sub-name { font-size: 0.9rem; font-weight: 700; }
     .sub-detail { font-size: 0.7rem; color: var(--text2); margin-top: 0.1rem; }
     .sub-amount { font-size: 0.88rem; font-weight: 700; color: var(--accent); white-space: nowrap; }
-    .sub-cur-badge { font-size: 0.6rem; background: var(--accent-bg); color: var(--accent); border-radius: 4px; padding: 0.1rem 0.3rem; font-weight: 700; margin-left: 0.25rem; vertical-align: middle; }
     .sub-quick-btn {
       background: var(--accent-bg); color: var(--accent); border: none; border-radius: 6px;
       padding: 0.3rem 0.5rem; font-size: 0.65rem; font-weight: 700; cursor: pointer; white-space: nowrap;
@@ -207,19 +205,9 @@
     }
     input:focus, select:focus { outline: none; border-color: var(--accent); background: var(--surface); }
     .amount-wrap { position: relative; }
-    .cur-prefix { position: absolute; left: 0.75rem; top: 50%; transform: translateY(-50%); font-size: 1rem; color: var(--text2); pointer-events: none; font-weight: 600; }
     .amount-wrap input { padding-left: 1.75rem; }
     input[type=number]::-webkit-inner-spin-button,
     input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
-
-    /* Currency chips (per-entry) */
-    .cur-chips { display: flex; flex-wrap: wrap; gap: 0.35rem; }
-    .cur-chip {
-      padding: 0.3rem 0.6rem; border: 1.5px solid var(--border);
-      border-radius: 6px; background: var(--surface); color: var(--text2);
-      font-size: 0.8rem; font-weight: 700; cursor: pointer; transition: all 0.1s;
-    }
-    .cur-chip.selected { border-color: var(--accent); background: var(--accent-bg); color: var(--accent); }
 
     /* Category chips */
     .cat-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 0.4rem; }
@@ -339,13 +327,9 @@
       <input type="text" id="exp-desc" placeholder="例：ランチ" maxlength="30">
     </div>
     <div class="form-group">
-      <label class="form-label">通貨</label>
-      <div class="cur-chips" id="exp-cur-chips"></div>
-    </div>
-    <div class="form-group">
       <label class="form-label">金額</label>
       <div class="amount-wrap">
-        <span class="cur-prefix" id="exp-cur-prefix">¥</span>
+        <span style="position:absolute;left:0.75rem;top:50%;transform:translateY(-50%);font-size:1rem;color:var(--text2);pointer-events:none;font-weight:600">¥</span>
         <input type="number" id="exp-amount" placeholder="0" inputmode="numeric" min="0.01" step="any">
       </div>
     </div>
@@ -366,13 +350,9 @@
       <input type="text" id="income-desc" placeholder="例：給料、ボーナス" maxlength="30">
     </div>
     <div class="form-group">
-      <label class="form-label">通貨</label>
-      <div class="cur-chips" id="income-cur-chips"></div>
-    </div>
-    <div class="form-group">
       <label class="form-label">金額</label>
       <div class="amount-wrap">
-        <span class="cur-prefix" id="income-cur-prefix">¥</span>
+        <span style="position:absolute;left:0.75rem;top:50%;transform:translateY(-50%);font-size:1rem;color:var(--text2);pointer-events:none;font-weight:600">¥</span>
         <input type="number" id="income-amount" placeholder="0" inputmode="numeric" min="0.01" step="any">
       </div>
     </div>
@@ -398,13 +378,9 @@
       <input type="text" id="sub-name" placeholder="例：Netflix" maxlength="30">
     </div>
     <div class="form-group">
-      <label class="form-label">通貨</label>
-      <div class="cur-chips" id="sub-cur-chips"></div>
-    </div>
-    <div class="form-group">
       <label class="form-label">金額</label>
       <div class="amount-wrap">
-        <span class="cur-prefix" id="sub-cur-prefix">¥</span>
+        <span style="position:absolute;left:0.75rem;top:50%;transform:translateY(-50%);font-size:1rem;color:var(--text2);pointer-events:none;font-weight:600">¥</span>
         <input type="number" id="sub-amount" placeholder="0" inputmode="numeric" min="0.01" step="any">
       </div>
     </div>
@@ -450,13 +426,6 @@ const CATS = [
   { id:'sub',   icon:'🔄',  name:'サブスク',color:'#6366f1' },
   { id:'other', icon:'📝',  name:'その他',  color:'#94a3b8' },
 ];
-const CURRENCIES = [
-  { code:'JPY', symbol:'¥',  label:'¥ JPY' },
-  { code:'USD', symbol:'$',  label:'$ USD' },
-  { code:'EUR', symbol:'€',  label:'€ EUR' },
-  { code:'GBP', symbol:'£',  label:'£ GBP' },
-  { code:'CNY', symbol:'¥',  label:'¥ CNY' },
-];
 const DAY_JP = ['日','月','火','水','木','金','土'];
 
 // ── DATA ──
@@ -473,44 +442,15 @@ function genId() { return Date.now().toString(36) + Math.random().toString(36).s
 // ── UTILS ──
 function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 
-function curSymbol(code) {
-  return (CURRENCIES.find(c => c.code === code) || CURRENCIES[0]).symbol;
+function fmt(n) {
+  return '¥' + Math.round(Number(n || 0)).toLocaleString();
 }
 
-function fmt(n, cur) {
-  cur = cur || 'JPY';
-  const sym = curSymbol(cur);
-  const num = Number(n || 0);
-  if (cur === 'JPY' || cur === 'CNY') return sym + Math.round(num).toLocaleString();
-  return sym + num.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-}
-
-function fmtK(n, cur) {
+function fmtK(n) {
   if (!n) return '';
-  cur = cur || 'JPY';
-  const sym = curSymbol(cur);
-  if (cur === 'JPY' || cur === 'CNY') {
-    if (n >= 10000) return sym + Math.round(n/1000) + 'k';
-    if (n >= 1000) return sym + (n/1000).toFixed(1).replace(/\.0$/,'') + 'k';
-    return sym + n;
-  }
-  if (n >= 1000) return sym + (n/1000).toFixed(1).replace(/\.0$/,'') + 'k';
-  return sym + Number(n).toFixed(2);
-}
-
-// Group amounts by currency, return display string
-function totalsByCur(entries) {
-  const map = {};
-  entries.forEach(e => {
-    const c = e.currency || 'JPY';
-    map[c] = (map[c] || 0) + e.amount;
-  });
-  return map;
-}
-function fmtTotals(map) {
-  const entries = Object.entries(map);
-  if (!entries.length) return fmt(0, 'JPY');
-  return entries.map(([c, a]) => fmt(a, c)).join(' / ');
+  if (n >= 10000) return '¥' + Math.round(n/1000) + 'k';
+  if (n >= 1000) return '¥' + (n/1000).toFixed(1).replace(/\.0$/,'') + 'k';
+  return '¥' + n;
 }
 
 function catById(id) { return CATS.find(c=>c.id===id) || CATS[CATS.length-1]; }
@@ -529,14 +469,6 @@ function showToast(msg) {
   setTimeout(() => el.classList.remove('show'), 2200);
 }
 
-// ── CURRENCY CHIP RENDERER ──
-function renderCurChips(containerId, prefixId, selectedCode) {
-  document.getElementById(containerId).innerHTML = CURRENCIES.map(c =>
-    `<button class="cur-chip ${c.code===selectedCode?'selected':''}" data-cur="${c.code}">${c.label}</button>`
-  ).join('');
-  document.getElementById(prefixId).textContent = curSymbol(selectedCode);
-}
-
 // ── STATE ──
 let calYear, calMonth;
 let listMode = 'month';
@@ -546,9 +478,6 @@ let editingSubId = null;
 let editingIncomeId = null;
 let selectedDate = null;
 let activeCat = 'food';
-let expCurrency = 'JPY';
-let incomeCurrency = 'JPY';
-let subCurrency = 'JPY';
 
 // ── WEEK HELPER ──
 function getWeekStart(date) {
@@ -562,7 +491,7 @@ function getWeekStart(date) {
 // ── PIE CHART SVG ──
 function pieChartSVG(expenses, size) {
   size = size || 140;
-  // Group by category ignoring currency for pie (show proportions by number)
+
   const byCat = {};
   expenses.forEach(e => { byCat[e.cat] = (byCat[e.cat]||0) + e.amount; });
   const entries = Object.entries(byCat).sort((a,b) => b[1]-a[1]);
@@ -590,17 +519,10 @@ function pieLegendHTML(expenses) {
   const byCat = {};
   expenses.forEach(e => { byCat[e.cat] = (byCat[e.cat]||0) + e.amount; });
   const total = Object.values(byCat).reduce((s,v)=>s+v, 0);
-  // Show amount per category with currency
-  const byCatDetailed = {};
-  expenses.forEach(e => {
-    if (!byCatDetailed[e.cat]) byCatDetailed[e.cat] = {};
-    const c = e.currency || 'JPY';
-    byCatDetailed[e.cat][c] = (byCatDetailed[e.cat][c]||0) + e.amount;
-  });
   return Object.entries(byCat).sort((a,b)=>b[1]-a[1]).slice(0,6).map(([catId, amt]) => {
     const c = catById(catId);
     const pct = total ? Math.round(amt/total*100) : 0;
-    const amtStr = fmtTotals(byCatDetailed[catId]);
+    const amtStr = fmt(amt);
     return `<div class="legend-item">
       <span class="legend-dot" style="background:${c.color}"></span>
       <span class="legend-name">${c.icon} ${c.name}</span>
@@ -615,35 +537,23 @@ function renderCalendar() {
   document.getElementById('cal-month-label').textContent = `${calYear}年${calMonth+1}月`;
   const data = load();
 
-  // Day totals grouped by currency
-  const dayExp = {}; // {day: {cur: amount}}
+  // Day totals
+  const dayExp = {};
   data.expenses.forEach(e => {
     const d = localDate(e.date);
-    if (d.getFullYear()===calYear && d.getMonth()===calMonth) {
-      const day = d.getDate(), c = e.currency||'JPY';
-      if (!dayExp[day]) dayExp[day] = {};
-      dayExp[day][c] = (dayExp[day][c]||0) + e.amount;
-    }
+    if (d.getFullYear()===calYear && d.getMonth()===calMonth)
+      dayExp[d.getDate()] = (dayExp[d.getDate()]||0) + e.amount;
   });
   const dayInc = {};
   data.incomes.forEach(e => {
     const d = localDate(e.date);
-    if (d.getFullYear()===calYear && d.getMonth()===calMonth) {
-      const day = d.getDate(), c = e.currency||'JPY';
-      if (!dayInc[day]) dayInc[day] = {};
-      dayInc[day][c] = (dayInc[day][c]||0) + e.amount;
-    }
+    if (d.getFullYear()===calYear && d.getMonth()===calMonth)
+      dayInc[d.getDate()] = (dayInc[d.getDate()]||0) + e.amount;
   });
 
   // Monthly totals
-  const monthExpMap = totalsByCur(data.expenses.filter(e => {
-    const d = localDate(e.date);
-    return d.getFullYear()===calYear && d.getMonth()===calMonth;
-  }));
-  const monthIncMap = totalsByCur(data.incomes.filter(e => {
-    const d = localDate(e.date);
-    return d.getFullYear()===calYear && d.getMonth()===calMonth;
-  }));
+  const monthExp = data.expenses.filter(e => { const d=localDate(e.date); return d.getFullYear()===calYear && d.getMonth()===calMonth; }).reduce((s,e)=>s+e.amount,0);
+  const monthInc = data.incomes.filter(e => { const d=localDate(e.date); return d.getFullYear()===calYear && d.getMonth()===calMonth; }).reduce((s,e)=>s+e.amount,0);
 
   const firstDow = new Date(calYear, calMonth, 1).getDay();
   const daysInMonth = new Date(calYear, calMonth+1, 0).getDate();
@@ -653,18 +563,15 @@ function renderCalendar() {
   for (let d=1; d<=daysInMonth; d++) {
     const dateStr = `${calYear}-${String(calMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
     const dow = (firstDow + d - 1) % 7;
-    const hasExp = dayExp[d] && Object.keys(dayExp[d]).length > 0;
-    const hasInc = dayInc[d] && Object.keys(dayInc[d]).length > 0;
+    const hasExp = !!dayExp[d];
+    const hasInc = !!dayInc[d];
     const cls = ['cal-day',
       hasExp && hasInc ? 'has-both' : hasExp ? 'has-exp' : hasInc ? 'has-inc' : '',
       dateStr===tStr ? 'today' : '', dow===0 ? 'sunday' : '', dow===6 ? 'saturday' : ''
     ].filter(Boolean).join(' ');
 
-    // Show up to 2 currency amounts per type in cell
-    const expLines = hasExp ? Object.entries(dayExp[d]).slice(0,2)
-      .map(([c,a]) => `<div class="cal-day-amt">${fmtK(a,c)}</div>`).join('') : '';
-    const incLines = hasInc ? Object.entries(dayInc[d]).slice(0,2)
-      .map(([c,a]) => `<div class="cal-day-inc">${fmtK(a,c)}</div>`).join('') : '';
+    const expLines = hasExp ? `<div class="cal-day-amt">${fmtK(dayExp[d])}</div>` : '';
+    const incLines = hasInc ? `<div class="cal-day-inc">${fmtK(dayInc[d])}</div>` : '';
 
     html += `<div class="${cls}" data-date="${dateStr}">
       <div class="cal-day-num">${d}</div>${expLines}${incLines}
@@ -673,33 +580,22 @@ function renderCalendar() {
   document.getElementById('cal-grid').innerHTML = html;
 
   // Monthly summary
-  const incStr = fmtTotals(monthIncMap);
-  const expStr = fmtTotals(monthExpMap);
-  const incCurs = Object.keys(monthIncMap), expCurs = Object.keys(monthExpMap);
-  const allCurs = [...new Set([...incCurs, ...expCurs])];
-  let balHTML = '';
-  if (allCurs.length === 1) {
-    const c = allCurs[0];
-    const bal = (monthIncMap[c]||0) - (monthExpMap[c]||0);
-    const cls = bal > 0 ? 'amount-pos' : bal < 0 ? 'amount-neg' : 'amount-zero';
-    const sign = bal > 0 ? '+' : '';
-    balHTML = `<div class="month-row"><span class="month-row-label">📊 収支</span><span class="month-row-amount ${cls}">${sign}${fmt(bal,c)}</span></div>`;
-  } else if (allCurs.length > 1) {
-    balHTML = `<div class="month-row"><span class="month-row-label">📊 収支</span><span class="month-row-amount amount-mixed">複数通貨</span></div>`;
-  }
+  const bal = monthInc - monthExp;
+  const balCls = bal > 0 ? 'amount-pos' : bal < 0 ? 'amount-neg' : 'amount-zero';
+  const balSign = bal > 0 ? '+' : '';
+  const balHTML = `<div class="month-row"><span class="month-row-label">📊 収支</span><span class="month-row-amount ${balCls}">${balSign}${fmt(bal)}</span></div>`;
 
   document.getElementById('month-summary').innerHTML = `
     <div class="month-summary-card">
-      <div class="month-row"><span class="month-row-label">💚 収入</span><span class="month-row-amount amount-inc">${incStr}</span></div>
-      <div class="month-row"><span class="month-row-label">💸 支出</span><span class="month-row-amount amount-exp">${expStr}</span></div>
+      <div class="month-row"><span class="month-row-label">💚 収入</span><span class="month-row-amount amount-inc">${fmt(monthInc)}</span></div>
+      <div class="month-row"><span class="month-row-label">💸 支出</span><span class="month-row-amount amount-exp">${fmt(monthExp)}</span></div>
       ${balHTML}
     </div>`;
 }
 
 // ── LIST ──
 function summaryHTML(expenses) {
-  const totalMap = totalsByCur(expenses);
-  const totalStr = fmtTotals(totalMap);
+  const totalStr = fmt(expenses.reduce((s,e)=>s+e.amount,0));
   const byCat = {};
   expenses.forEach(e => { byCat[e.cat]=(byCat[e.cat]||0)+e.amount; });
   const sorted = Object.entries(byCat).sort((a,b)=>b[1]-a[1]);
@@ -729,7 +625,7 @@ function expenseGroupHTML(expenses) {
   expenses.forEach(e => { if(!groups[e.date]) groups[e.date]=[]; groups[e.date].push(e); });
   return Object.keys(groups).sort().reverse().map(date => {
     const items = groups[date];
-    const dayMap = totalsByCur(items);
+    const dayTotal = items.reduce((s,e)=>s+e.amount,0);
     const itemsHTML = items.map(e => {
       const c = catById(e.cat);
       return `<div class="exp-item" data-id="${e.id}">
@@ -738,12 +634,12 @@ function expenseGroupHTML(expenses) {
           <div class="exp-desc">${esc(e.desc||c.name)}</div>
           <div class="exp-cat-label">${c.name}</div>
         </div>
-        <span class="exp-amount">${fmt(e.amount, e.currency||'JPY')}</span>
+        <span class="exp-amount">${fmt(e.amount)}</span>
         <button class="exp-delete" data-id="${e.id}">✕</button>
       </div>`;
     }).join('');
     return `<div class="exp-date-group">
-      <div class="exp-date-header"><span>${dateLabel(date)}</span><span>${fmtTotals(dayMap)}</span></div>
+      <div class="exp-date-header"><span>${dateLabel(date)}</span><span>${fmt(dayTotal)}</span></div>
       ${itemsHTML}
     </div>`;
   }).join('');
@@ -790,40 +686,25 @@ function renderSubs() {
   const data = load();
   const subs = data.subscriptions || [];
 
-  // Monthly total grouped by currency
-  const monthMap = {};
-  subs.forEach(sub => {
-    const c = sub.currency || 'JPY';
-    const monthly = sub.cycle==='monthly' ? sub.amount : sub.amount/12;
-    monthMap[c] = (monthMap[c]||0) + monthly;
-  });
-  const monthStr = Object.entries(monthMap).map(([c,a]) => fmt(a,c)).join(' / ') || fmt(0,'JPY');
-
-  const yearlyMap = {};
-  subs.filter(s=>s.cycle==='yearly').forEach(sub => {
-    const c = sub.currency || 'JPY';
-    yearlyMap[c] = (yearlyMap[c]||0) + sub.amount;
-  });
-  const yearlyStr = Object.entries(yearlyMap).map(([c,a]) => fmt(a,c)).join(' / ');
+  const monthTotal = subs.reduce((s,sub) => s + (sub.cycle==='monthly' ? sub.amount : sub.amount/12), 0);
+  const yearlyTotal = subs.filter(s=>s.cycle==='yearly').reduce((s,sub)=>s+sub.amount,0);
 
   const totalCard = `<div class="subs-total-card">
     <div class="subs-total-label">月あたりの合計</div>
-    <div class="subs-total-amount">${monthStr}<span style="font-size:0.85rem;opacity:0.8">/月</span></div>
-    ${yearlyStr ? `<div class="subs-total-note">年払い含む（${yearlyStr}/年）</div>` : ''}
+    <div class="subs-total-amount">${fmt(monthTotal)}<span style="font-size:0.85rem;opacity:0.8">/月</span></div>
+    ${yearlyTotal ? `<div class="subs-total-note">年払い含む（${fmt(yearlyTotal)}/年）</div>` : ''}
   </div>`;
 
   const subItems = subs.length ? subs.map(sub => {
     const cycleLabel = sub.cycle==='monthly' ? `毎月${sub.day||'?'}日` : `毎年${sub.month||'?'}月${sub.day||'?'}日`;
     const nextLabel = nextBillingDate(sub);
-    const cur = sub.currency || 'JPY';
-    const badge = cur !== 'JPY' ? `<span class="sub-cur-badge">${cur}</span>` : '';
     return `<div class="sub-item">
       <span class="sub-icon">🔄</span>
       <div class="sub-info">
-        <div class="sub-name">${esc(sub.name)}${badge}</div>
+        <div class="sub-name">${esc(sub.name)}</div>
         <div class="sub-detail">${cycleLabel}　次回: ${nextLabel}</div>
       </div>
-      <span class="sub-amount">${fmt(sub.amount, cur)}</span>
+      <span class="sub-amount">${fmt(sub.amount)}</span>
       <button class="sub-quick-btn" data-sub-id="${sub.id}">追加</button>
       <button class="sub-edit-btn" data-sub-id="${sub.id}">✏️</button>
     </div>`;
@@ -858,16 +739,13 @@ function openExpModal(expId, prefillDate) {
     document.getElementById('exp-desc').value = exp.desc || '';
     document.getElementById('exp-amount').value = exp.amount;
     activeCat = exp.cat;
-    expCurrency = exp.currency || 'JPY';
   } else {
     document.getElementById('exp-date').value = prefillDate || todayStr();
     document.getElementById('exp-desc').value = '';
     document.getElementById('exp-amount').value = '';
     activeCat = 'food';
-    expCurrency = 'JPY';
   }
   renderCatChips();
-  renderCurChips('exp-cur-chips', 'exp-cur-prefix', expCurrency);
   openModal('modal-expense');
   setTimeout(() => document.getElementById('exp-amount').focus(), 300);
 }
@@ -889,9 +767,9 @@ function saveExpense() {
   const data = load();
   if (editingExpId) {
     const exp = data.expenses.find(e=>e.id===editingExpId);
-    if (exp) { exp.date=date; exp.cat=activeCat; exp.desc=desc; exp.amount=amount; exp.currency=expCurrency; }
+    if (exp) { exp.date=date; exp.cat=activeCat; exp.desc=desc; exp.amount=amount; }
   } else {
-    data.expenses.push({ id:genId(), date, cat:activeCat, desc, amount, currency:expCurrency });
+    data.expenses.push({ id:genId(), date, cat:activeCat, desc, amount });
   }
   save(data); closeAllModals(); refresh();
   showToast(editingExpId ? '更新しました' : '追加しました');
@@ -917,14 +795,11 @@ function openIncomeModal(incId, prefillDate) {
     document.getElementById('income-date').value = inc.date;
     document.getElementById('income-desc').value = inc.desc || '';
     document.getElementById('income-amount').value = inc.amount;
-    incomeCurrency = inc.currency || 'JPY';
   } else {
     document.getElementById('income-date').value = prefillDate || todayStr();
     document.getElementById('income-desc').value = '';
     document.getElementById('income-amount').value = '';
-    incomeCurrency = 'JPY';
   }
-  renderCurChips('income-cur-chips', 'income-cur-prefix', incomeCurrency);
   openModal('modal-income');
   setTimeout(() => document.getElementById('income-amount').focus(), 300);
 }
@@ -938,9 +813,9 @@ function saveIncome() {
   const data = load();
   if (editingIncomeId) {
     const inc = data.incomes.find(e=>e.id===editingIncomeId);
-    if (inc) { inc.date=date; inc.desc=desc; inc.amount=amount; inc.currency=incomeCurrency; }
+    if (inc) { inc.date=date; inc.desc=desc; inc.amount=amount; }
   } else {
-    data.incomes.push({ id:genId(), date, desc, amount, currency:incomeCurrency });
+    data.incomes.push({ id:genId(), date, desc, amount });
   }
   save(data); closeAllModals(); refresh();
   showToast(editingIncomeId ? '更新しました' : '収入を追加しました');
@@ -971,11 +846,11 @@ function openDayModal(dateStr) {
           <div style="font-size:0.88rem;font-weight:600;color:var(--green)">${esc(e.desc||'収入')}</div>
           <div style="font-size:0.68rem;color:var(--text3)">収入</div>
         </div>
-        <span style="font-size:0.88rem;font-weight:700;color:var(--green)">+${fmt(e.amount, e.currency||'JPY')}</span>
+        <span style="font-size:0.88rem;font-weight:700;color:var(--green)">+${fmt(e.amount)}</span>
       </div>`;
     });
     if (expenses.length) {
-      const dayMap = totalsByCur(expenses);
+      const dayTotal = expenses.reduce((s,e)=>s+e.amount,0);
       expenses.forEach(e => {
         const c = catById(e.cat);
         html += `<div class="day-exp-item" data-id="${e.id}" style="cursor:pointer">
@@ -984,10 +859,10 @@ function openDayModal(dateStr) {
             <div style="font-size:0.88rem;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(e.desc||c.name)}</div>
             <div style="font-size:0.68rem;color:var(--text3)">${c.name}</div>
           </div>
-          <span style="font-size:0.88rem;font-weight:700">${fmt(e.amount, e.currency||'JPY')}</span>
+          <span style="font-size:0.88rem;font-weight:700">${fmt(e.amount)}</span>
         </div>`;
       });
-      html += `<div class="day-total-row"><span>支出合計</span><span style="color:var(--accent)">${fmtTotals(dayMap)}</span></div>`;
+      html += `<div class="day-total-row"><span>支出合計</span><span style="color:var(--accent)">${fmt(dayTotal)}</span></div>`;
     }
   }
   document.getElementById('day-exp-list').innerHTML = html;
@@ -1010,7 +885,6 @@ function openSubModal(subId) {
     document.getElementById('sub-day').value = sub.day||'';
     document.getElementById('sub-bmonth').value = sub.month||'';
     document.getElementById('sub-bday').value = sub.bday||sub.day||'';
-    subCurrency = sub.currency || 'JPY';
     toggleSubCycleFields(sub.cycle);
   } else {
     document.getElementById('sub-name').value = '';
@@ -1019,10 +893,8 @@ function openSubModal(subId) {
     document.getElementById('sub-day').value = '';
     document.getElementById('sub-bmonth').value = '';
     document.getElementById('sub-bday').value = '';
-    subCurrency = 'JPY';
     toggleSubCycleFields('monthly');
   }
-  renderCurChips('sub-cur-chips', 'sub-cur-prefix', subCurrency);
   openModal('modal-sub');
 }
 
@@ -1042,12 +914,12 @@ function saveSub() {
   if (editingSubId) {
     const sub = data.subscriptions.find(s=>s.id===editingSubId);
     if (sub) {
-      sub.name=name; sub.amount=amount; sub.cycle=cycle; sub.currency=subCurrency;
+      sub.name=name; sub.amount=amount; sub.cycle=cycle;
       if (cycle==='monthly') sub.day=parseInt(document.getElementById('sub-day').value)||1;
       else { sub.month=parseInt(document.getElementById('sub-bmonth').value)||1; sub.day=parseInt(document.getElementById('sub-bday').value)||1; }
     }
   } else {
-    const sub = { id:genId(), name, amount, cycle, currency:subCurrency };
+    const sub = { id:genId(), name, amount, cycle };
     if (cycle==='monthly') sub.day = parseInt(document.getElementById('sub-day').value)||1;
     else { sub.month=parseInt(document.getElementById('sub-bmonth').value)||1; sub.day=parseInt(document.getElementById('sub-bday').value)||1; }
     data.subscriptions.push(sub);
@@ -1067,7 +939,7 @@ function addSubAsExpense(subId) {
   const sub = (load().subscriptions||[]).find(s=>s.id===subId);
   if (!sub) return;
   const data = load();
-  data.expenses.push({ id:genId(), date:todayStr(), cat:'sub', desc:sub.name, amount:sub.amount, currency:sub.currency||'JPY' });
+  data.expenses.push({ id:genId(), date:todayStr(), cat:'sub', desc:sub.name, amount:sub.amount });
   save(data); refresh(); showToast(`${sub.name} を支出に追加しました`);
 }
 
@@ -1122,29 +994,6 @@ function initListeners() {
     if (!chip) return;
     activeCat = chip.dataset.cat;
     document.querySelectorAll('.cat-chip').forEach(c => c.classList.toggle('selected', c.dataset.cat===activeCat));
-  });
-
-  // Currency chips in each modal
-  document.getElementById('exp-cur-chips').addEventListener('click', e => {
-    const chip = e.target.closest('.cur-chip');
-    if (!chip) return;
-    expCurrency = chip.dataset.cur;
-    document.querySelectorAll('#exp-cur-chips .cur-chip').forEach(c => c.classList.toggle('selected', c.dataset.cur===expCurrency));
-    document.getElementById('exp-cur-prefix').textContent = curSymbol(expCurrency);
-  });
-  document.getElementById('income-cur-chips').addEventListener('click', e => {
-    const chip = e.target.closest('.cur-chip');
-    if (!chip) return;
-    incomeCurrency = chip.dataset.cur;
-    document.querySelectorAll('#income-cur-chips .cur-chip').forEach(c => c.classList.toggle('selected', c.dataset.cur===incomeCurrency));
-    document.getElementById('income-cur-prefix').textContent = curSymbol(incomeCurrency);
-  });
-  document.getElementById('sub-cur-chips').addEventListener('click', e => {
-    const chip = e.target.closest('.cur-chip');
-    if (!chip) return;
-    subCurrency = chip.dataset.cur;
-    document.querySelectorAll('#sub-cur-chips .cur-chip').forEach(c => c.classList.toggle('selected', c.dataset.cur===subCurrency));
-    document.getElementById('sub-cur-prefix').textContent = curSymbol(subCurrency);
   });
 
   document.getElementById('btn-save-exp').addEventListener('click', saveExpense);
