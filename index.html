@@ -155,6 +155,7 @@
     .exp-cat-label { font-size: 0.68rem; color: var(--text3); }
     .exp-amount { font-size: 0.88rem; font-weight: 700; white-space: nowrap; }
     .exp-delete { background: none; border: none; color: var(--text3); cursor: pointer; font-size: 0.9rem; padding: 0.3rem; flex-shrink: 0; }
+    .pay-badge { font-size: 0.6rem; background: var(--surface2); color: var(--text2); border: 1px solid var(--border); border-radius: 4px; padding: 0.1rem 0.3rem; font-weight: 600; white-space: nowrap; }
 
     /* SUBSCRIPTIONS */
     .subs-total-card { background: var(--accent); color: #fff; border-radius: var(--radius); padding: 1rem; margin-bottom: 0.75rem; }
@@ -293,7 +294,10 @@
 
   <!-- ③ サブスク -->
   <div id="page-subs" class="page">
-    <div class="page-header"><h1>🔄 サブスク管理</h1></div>
+    <div class="page-header">
+      <h1>🔄 サブスク管理</h1>
+      <button id="btn-pay-manage" style="background:none;border:none;font-size:1.2rem;cursor:pointer;padding:0.2rem">⚙️</button>
+    </div>
     <main>
       <div id="subs-content"></div>
       <button class="add-dashed-btn" id="btn-add-sub">＋ サブスクを追加</button>
@@ -325,6 +329,10 @@
     <div class="form-group">
       <label class="form-label">内容（省略可）</label>
       <input type="text" id="exp-desc" placeholder="例：ランチ" maxlength="30">
+    </div>
+    <div class="form-group">
+      <label class="form-label">支払い方法</label>
+      <select id="exp-payment"></select>
     </div>
     <div class="form-group">
       <label class="form-label">金額</label>
@@ -408,6 +416,17 @@
     <button class="btn btn-danger" id="btn-del-sub" style="display:none">このサブスクを削除</button>
   </div>
 
+  <!-- 支払い方法管理モーダル -->
+  <div id="modal-pay" class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title">💳 支払い方法管理</div>
+    <div id="pay-list" style="margin-bottom:0.75rem"></div>
+    <div style="display:flex;gap:0.5rem">
+      <input type="text" id="pay-new-name" placeholder="例：楽天カード" maxlength="20" style="flex:1">
+      <button id="btn-pay-add" class="btn btn-primary" style="width:auto;padding:0.7rem 1rem;margin-top:0">追加</button>
+    </div>
+  </div>
+
   <div class="toast" id="toast"></div>
 </div>
 
@@ -430,11 +449,20 @@ const DAY_JP = ['日','月','火','水','木','金','土'];
 
 // ── DATA ──
 const KEY = 'kakeibo_v1';
+const DEFAULT_PAYMENTS = [
+  { id:'cash',   name:'現金' },
+  { id:'credit', name:'クレジットカード' },
+];
 function load() {
   try {
     const d = JSON.parse(localStorage.getItem(KEY)) || {};
-    return { expenses: d.expenses||[], subscriptions: d.subscriptions||[], incomes: d.incomes||[] };
-  } catch { return { expenses:[], subscriptions:[], incomes:[] }; }
+    return {
+      expenses: d.expenses||[],
+      subscriptions: d.subscriptions||[],
+      incomes: d.incomes||[],
+      paymentMethods: d.paymentMethods || DEFAULT_PAYMENTS.map(p=>({...p})),
+    };
+  } catch { return { expenses:[], subscriptions:[], incomes:[], paymentMethods: DEFAULT_PAYMENTS.map(p=>({...p})) }; }
 }
 function save(d) { localStorage.setItem(KEY, JSON.stringify(d)); }
 function genId() { return Date.now().toString(36) + Math.random().toString(36).slice(2,5); }
@@ -454,6 +482,27 @@ function fmtK(n) {
 }
 
 function catById(id) { return CATS.find(c=>c.id===id) || CATS[CATS.length-1]; }
+function payById(id) { const d = load(); return d.paymentMethods.find(p=>p.id===id); }
+function payName(id) { const p = payById(id); return p ? p.name : ''; }
+
+function renderPaySelect(selectedId) {
+  const methods = load().paymentMethods;
+  const opts = ['<option value="">（未選択）</option>',
+    ...methods.map(p => `<option value="${p.id}"${p.id===selectedId?' selected':''}>${esc(p.name)}</option>`)
+  ].join('');
+  document.getElementById('exp-payment').innerHTML = opts;
+}
+
+function renderPayManage() {
+  const methods = load().paymentMethods;
+  document.getElementById('pay-list').innerHTML = methods.length
+    ? methods.map(p => `
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:0.55rem 0;border-bottom:1px solid var(--border)">
+        <span style="font-size:0.9rem;font-weight:600">${esc(p.name)}</span>
+        <button class="pay-del-btn" data-pay-id="${p.id}" style="background:none;border:none;color:var(--text3);cursor:pointer;font-size:0.85rem;padding:0.25rem 0.5rem">✕</button>
+      </div>`).join('')
+    : '<div style="color:var(--text3);font-size:0.85rem;padding:0.5rem 0">支払い方法がありません</div>';
+}
 function todayStr() {
   const n = new Date();
   return `${n.getFullYear()}-${String(n.getMonth()+1).padStart(2,'0')}-${String(n.getDate()).padStart(2,'0')}`;
@@ -628,11 +677,12 @@ function expenseGroupHTML(expenses) {
     const dayTotal = items.reduce((s,e)=>s+e.amount,0);
     const itemsHTML = items.map(e => {
       const c = catById(e.cat);
+      const pName = e.paymentId ? payName(e.paymentId) : '';
       return `<div class="exp-item" data-id="${e.id}">
         <span class="exp-cat-icon">${c.icon}</span>
         <div class="exp-info">
           <div class="exp-desc">${esc(e.desc||c.name)}</div>
-          <div class="exp-cat-label">${c.name}</div>
+          <div class="exp-cat-label">${c.name}${pName ? `　<span class="pay-badge">${esc(pName)}</span>` : ''}</div>
         </div>
         <span class="exp-amount">${fmt(e.amount)}</span>
         <button class="exp-delete" data-id="${e.id}">✕</button>
@@ -739,11 +789,13 @@ function openExpModal(expId, prefillDate) {
     document.getElementById('exp-desc').value = exp.desc || '';
     document.getElementById('exp-amount').value = exp.amount;
     activeCat = exp.cat;
+    renderPaySelect(exp.paymentId || '');
   } else {
     document.getElementById('exp-date').value = prefillDate || todayStr();
     document.getElementById('exp-desc').value = '';
     document.getElementById('exp-amount').value = '';
     activeCat = 'food';
+    renderPaySelect('');
   }
   renderCatChips();
   openModal('modal-expense');
@@ -762,14 +814,15 @@ function saveExpense() {
   const date = document.getElementById('exp-date').value;
   const desc = document.getElementById('exp-desc').value.trim();
   const amount = parseFloat(document.getElementById('exp-amount').value);
+  const paymentId = document.getElementById('exp-payment').value || null;
   if (!date) { showToast('日付を選択してください'); return; }
   if (!amount || amount <= 0) { showToast('金額を入力してください'); return; }
   const data = load();
   if (editingExpId) {
     const exp = data.expenses.find(e=>e.id===editingExpId);
-    if (exp) { exp.date=date; exp.cat=activeCat; exp.desc=desc; exp.amount=amount; }
+    if (exp) { exp.date=date; exp.cat=activeCat; exp.desc=desc; exp.amount=amount; exp.paymentId=paymentId; }
   } else {
-    data.expenses.push({ id:genId(), date, cat:activeCat, desc, amount });
+    data.expenses.push({ id:genId(), date, cat:activeCat, desc, amount, paymentId });
   }
   save(data); closeAllModals(); refresh();
   showToast(editingExpId ? '更新しました' : '追加しました');
@@ -1019,6 +1072,35 @@ function initListeners() {
     if (quickBtn) { addSubAsExpense(quickBtn.dataset.subId); return; }
     const editBtn = e.target.closest('.sub-edit-btn');
     if (editBtn) openSubModal(editBtn.dataset.subId);
+  });
+
+  // 支払い方法管理
+  document.getElementById('btn-pay-manage').addEventListener('click', () => {
+    renderPayManage();
+    openModal('modal-pay');
+  });
+  document.getElementById('btn-pay-add').addEventListener('click', () => {
+    const name = document.getElementById('pay-new-name').value.trim();
+    if (!name) { showToast('名前を入力してください'); return; }
+    const data = load();
+    data.paymentMethods.push({ id: genId(), name });
+    save(data);
+    document.getElementById('pay-new-name').value = '';
+    renderPayManage();
+    showToast('追加しました');
+  });
+  document.getElementById('pay-new-name').addEventListener('keydown', e => {
+    if (e.key === 'Enter') document.getElementById('btn-pay-add').click();
+  });
+  document.getElementById('pay-list').addEventListener('click', e => {
+    const btn = e.target.closest('.pay-del-btn');
+    if (!btn) return;
+    if (!confirm('この支払い方法を削除しますか？')) return;
+    const data = load();
+    data.paymentMethods = data.paymentMethods.filter(p => p.id !== btn.dataset.payId);
+    save(data);
+    renderPayManage();
+    showToast('削除しました');
   });
 
   document.getElementById('overlay').addEventListener('click', closeAllModals);
