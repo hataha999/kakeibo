@@ -644,7 +644,10 @@ function renderCalendar() {
 
 // ── LIST ──
 function summaryHTML(expenses) {
-  const totalStr = fmt(expenses.reduce((s,e)=>s+e.amount,0));
+  const total = expenses.reduce((s,e)=>s+e.amount,0);
+  const totalStr = fmt(total);
+
+  // カテゴリ別バー
   const byCat = {};
   expenses.forEach(e => { byCat[e.cat]=(byCat[e.cat]||0)+e.amount; });
   const sorted = Object.entries(byCat).sort((a,b)=>b[1]-a[1]);
@@ -661,10 +664,41 @@ function summaryHTML(expenses) {
       <div class="cat-bar-wrap"><div class="cat-bar" style="width:${pct}%;background:${c.color}"></div></div>
     </div>`;
   }).join('');
+
+  // 支払い方法別バー
+  const paySection = (() => {
+    if (!expenses.length || !total) return '';
+    const methods = load().paymentMethods;
+    const byPay = {};
+    expenses.forEach(e => {
+      const key = e.paymentId || '__none__';
+      byPay[key] = (byPay[key]||0) + e.amount;
+    });
+    const payEntries = Object.entries(byPay).sort((a,b)=>b[1]-a[1]);
+    const payMaxAmt = payEntries[0]?.[1] || 1;
+    const payBars = payEntries.map(([pid, amt]) => {
+      const name = pid === '__none__' ? '未設定' : (methods.find(m=>m.id===pid)?.name || '削除済み');
+      const pct = Math.round(amt/payMaxAmt*100);
+      const sharePct = Math.round(amt/total*100);
+      return `<div class="cat-bar-row">
+        <div class="cat-bar-header">
+          <span class="cat-bar-label">💳 ${esc(name)}</span>
+          <span style="font-size:0.72rem;font-weight:700">${fmt(amt)} <span style="color:var(--text3);font-weight:500">(${sharePct}%)</span></span>
+        </div>
+        <div class="cat-bar-wrap"><div class="cat-bar" style="width:${pct}%;background:#7c3aed"></div></div>
+      </div>`;
+    }).join('');
+    return `<div style="margin-top:0.75rem;padding-top:0.75rem;border-top:1px solid var(--border)">
+      <div style="font-size:0.72rem;font-weight:700;color:var(--text2);margin-bottom:0.5rem">支払い方法別</div>
+      ${payBars}
+    </div>`;
+  })();
+
   return `<div class="summary-card">
     <div class="summary-total"><span>合計</span>${totalStr}</div>
     ${pieSection}
     ${bars || '<div style="color:var(--text3);font-size:0.8rem">支出がありません</div>'}
+    ${paySection}
   </div>`;
 }
 
