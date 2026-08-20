@@ -660,7 +660,7 @@ function summaryHTML(expenses) {
     const c = catById(catId);
     const pct = Math.round(amt/maxAmt*100);
     return `<div class="cat-bar-row">
-      <div class="cat-bar-header"><span class="cat-bar-label">${c.icon} ${c.name}</span><span style="font-size:0.72rem;font-weight:700">${amt}</span></div>
+      <div class="cat-bar-header"><span class="cat-bar-label">${c.icon} ${c.name}</span><span style="font-size:0.72rem;font-weight:700">${fmt(amt)}</span></div>
       <div class="cat-bar-wrap"><div class="cat-bar" style="width:${pct}%;background:${c.color}"></div></div>
     </div>`;
   }).join('');
